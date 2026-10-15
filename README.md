@@ -2,6 +2,27 @@
 
 A responsive Arena of Valor / Lien Quan Mobile reference site built with vanilla JavaScript and Vite.
 
+## Publish the WebUI on GitHub Pages
+
+This is a fully static browser app: GitHub Pages serves the built WebUI and
+bundled JSON directly. No API server, database service, or API keys are needed.
+
+1. Push this project to the `main` branch of your GitHub repository.
+2. Open the repository's **Settings > Pages**.
+3. Under **Build and deployment**, select **GitHub Actions** as the source.
+4. Open **Actions > Deploy WebUI to GitHub Pages** and run the workflow, or
+   push another commit to `main`.
+5. Open the deployed URL shown by the workflow's `github-pages` environment.
+
+The workflow installs locked dependencies, runs tests, builds `dist`, and
+deploys that folder. Relative asset/data paths support both repository sites
+(for example `https://your-account.github.io/LiQiDB/`) and root/custom-domain
+sites without changing the build. Hash navigation keeps direct links such as
+`/LiQiDB/#tier-list` compatible with Pages without a server rewrite.
+
+Personal tier lists are saved in the visitor's browser, not a shared server.
+Artwork still loads from the original Garena hosts.
+
 ## Run
 
 ```sh

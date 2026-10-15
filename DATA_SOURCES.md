@@ -50,9 +50,10 @@ Upstream `searchKey` is preserved in each collection.
 
 ## Browser exports
 
-`src/data.js` uses top-level await to fetch the same-origin `/data/*.json`
+`src/data.js` uses top-level await to fetch document-relative `./data/*.json`
 snapshots and exports `heroes`, `items`, `runes`, `spells`, and `meta`.
-The server must expose `public` at its root.
+The static build includes these files beside the WebUI, so it can be hosted
+at the domain root or beneath a GitHub Pages repository path.
 
 It also exports `normalize(text)`, `filterRecords(records, query,
 className = 'All')`, `roles`, and `getArtwork(hero)`. Search matches normalized

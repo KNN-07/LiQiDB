@@ -1,5 +1,5 @@
 async function load(name) {
-  const response = await fetch(`/data/${name}.json`);
+  const response = await fetch(`./data/${name}.json`);
   if (!response.ok) throw new Error(`Could not load ${name}: HTTP ${response.status}`);
   return response.json();
 }

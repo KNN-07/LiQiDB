@@ -7,11 +7,11 @@ const snapshots = Object.fromEntries(await Promise.all(names.map(async (name) =>
   JSON.parse(await readFile(new URL(`../public/data/${name}.json`, import.meta.url), 'utf8')),
 ])));
 
-// Exercise browser-relative fetches against the real static snapshot over HTTP.
+// A project Pages site exposes data under its repository, not the domain root.
 const server = Bun.serve({
   port: 0,
   fetch(request) {
-    const name = new URL(request.url).pathname.match(/^\/data\/([\w-]+)\.json$/)?.[1];
+    const name = new URL(request.url).pathname.match(/^\/LiQiDB\/data\/([\w-]+)\.json$/)?.[1];
     return name && snapshots[name] ? Response.json(snapshots[name]) : new Response(null, { status: 404 });
   },
 });
@@ -19,7 +19,7 @@ const nativeFetch = globalThis.fetch;
 const requested = [];
 globalThis.fetch = (input, init) => {
   requested.push(input);
-  return nativeFetch(new URL(input, server.url), init);
+  return nativeFetch(new URL(input, new URL('LiQiDB/', server.url)), init);
 };
 let data;
 try {
@@ -32,7 +32,7 @@ afterAll(() => server.stop(true));
 describe('pinned data integrity', () => {
   test('loads every collection without dropping record fields', () => {
     expect(requested.sort()).toEqual(
-      ['heroes', 'items', 'runes', 'spells', 'meta'].map((name) => `/data/${name}.json`).sort(),
+      ['heroes', 'items', 'runes', 'spells', 'meta'].map((name) => `./data/${name}.json`).sort(),
     );
     for (const name of ['heroes', 'items', 'runes', 'spells']) {
       expect(data[name]).toEqual(snapshots[name]);
