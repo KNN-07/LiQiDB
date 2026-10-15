@@ -1,0 +1,24 @@
+{
+  "source": "https://github.com/MLuc24/lien-quan-data",
+  "branch": "main",
+  "commit": "c92526a134b434ca3f40936e393deb86f90dffc2",
+  "snapshotDate": "2026-10-12T08:10:03.376Z",
+  "crawlInfo": {
+    "fandom-en": {
+      "crawledAt": "2026-10-12T08:10:03.376Z",
+      "titles": 129,
+      "pages": 129
+    },
+    "fandom-vi": {
+      "crawledAt": "2026-10-12T08:10:02.358Z",
+      "titles": 130,
+      "pages": 121
+    }
+  },
+  "counts": {
+    "heroes": 129,
+    "items": 112,
+    "runes": 88,
+    "spells": 11
+  }
+}

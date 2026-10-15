@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore Arena of Valor heroes, skills, equipment, arcana and spells. Build your own personal Liên Quân Mobile tier list.">
+    <meta name="theme-color" content="#0d111a">
+    <title>LiQiDB - The Athanor Field Guide</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d111a'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-size='46' fill='%23e8c68a'%3EL%3C/text%3E%3C/svg%3E">
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="#heroes" aria-label="LiQiDB home"><span class="brand-mark">L</span><span>LiQi<span class="brand-db">DB</span><small>ARENA OF VALOR</small></span></a>
+      <nav aria-label="Main navigation">
+        <a href="#heroes" data-view="heroes">Heroes</a>
+        <a href="#tier-list" data-view="tier-list">Tier List</a>
+        <a href="#items" data-view="items">Equipment</a>
+        <a href="#runes" data-view="runes">Arcana</a>
+        <a href="#spells" data-view="spells">Spells</a>
+      </nav>
+      <label class="theme-label"><span class="sr-only">Color theme</span><select id="theme" aria-label="Color theme"><option value="system">System theme</option><option value="dark">Dark theme</option><option value="light">Light theme</option></select></label>
+    </header>
+    <main id="main"><div class="loading-state">Opening the field guide&hellip;</div></main>
+    <footer><a class="footer-brand" href="#heroes">LiQiDB</a><p>An independent field guide to Arena of Valor.<br>Game data &amp; artwork belong to Garena / TiMi Studios.</p><a href="https://github.com/MLuc24/lien-quan-data" target="_blank" rel="noreferrer">Open data by MLuc24 &nearr;</a></footer>
+    <dialog id="detail" aria-labelledby="detail-title"></dialog>
+  </body>
+</html>
