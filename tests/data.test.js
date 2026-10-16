@@ -117,21 +117,63 @@ describe('curated counter-pick guide', () => {
     expect(data.filterMatchups('no-such-matchup')).toEqual([]);
   });
 
-  test('covers every hero form with resolvable skill evidence', () => {
-    expect([...new Set(data.matchups.map(pair => pair.target))].sort()).toEqual(
-      data.heroes.map(hero => hero.slug).sort(),
-    );
+  test('grades supported mechanics separately from unresolved interactions', () => {
     expect(data.counterGuide.balanceDate).toBe(data.seasonMeta.balance.date);
-    for (const pair of data.matchups) {
-      expect(pair.specContext.trim().length).toBeGreaterThan(0);
-      expect(new Set(pair.skillEvidence.map(evidence => evidence.hero))).toEqual(
+    expect(data.counterGuide.scoreMethod.kind).toBe('editorial-ordinal');
+    expect(data.counterGuide.scoreMethod.scale.map(grade => grade.score)).toEqual([1,2,3,4,5]);
+    const all = [...data.matchups, ...data.counterGuide.unverifiedCandidates];
+    expect(new Set(all.map(pair => `${pair.counter}:${pair.target}`)).size).toBe(all.length);
+    for (const pair of all) {
+      const analysis = pair.analysis;
+      expect(new Set(analysis.evidence.map(evidence => evidence.hero))).toEqual(
         new Set([pair.counter, pair.target]),
       );
-      for (const evidence of pair.skillEvidence) {
-        const hero = data.heroes.find(hero => hero.slug === evidence.hero);
-        expect(hero.skills.find(skill => skill.slot === evidence.slot)?.name).toBe(evidence.skillName);
-        expect(evidence.interaction.trim().length).toBeGreaterThan(0);
+      for (const key of ['scenario','targetAction','response','causalLink','cost','scoreReason','nextGradeLimit','versionNote']) {
+        expect(analysis[key].trim().length).toBeGreaterThan(0);
       }
+      for (const key of ['setup','sequence','counterplay','mechanics']) {
+        expect(analysis[key].length).toBeGreaterThan(0);
+      }
+      for (const evidence of analysis.evidence) {
+        expect(new URL(evidence.url).protocol).toBe('https:');
+        expect(evidence.fact.trim().length).toBeGreaterThan(0);
+        expect(evidence.section.trim().length).toBeGreaterThan(0);
+        if (evidence.source === 'fandom') {
+          const wiki = data.heroWiki.records.find(record => record.slug === evidence.hero);
+          expect(wiki.status).toBe('available');
+          expect(evidence.revisionId).toBe(wiki.source.revisionId);
+        }
+      }
+      if (pair.disposition === 'recommended') {
+        expect(data.matchups).toContain(pair);
+        expect(Number.isInteger(analysis.score)).toBe(true);
+        expect(analysis.score).toBeGreaterThanOrEqual(1);
+        expect(analysis.score).toBeLessThanOrEqual(5);
+        expect(['high','medium','low']).toContain(analysis.confidence);
+      } else {
+        expect(data.matchups).not.toContain(pair);
+        expect(analysis.score).toBeNull();
+        expect(analysis.confidence).toBe('unrated');
+      }
+    }
+    for (const [counter,target] of [['ata','bijan'],['chaugnar','darcy']]) {
+      expect(data.matchups.find(pair => pair.counter === counter && pair.target === target)).toBeUndefined();
+      expect(data.counterGuide.unverifiedCandidates.find(pair => pair.counter === counter && pair.target === target)?.analysis.score).toBeNull();
+    }
+  });
+
+  test('returns both hero directions with descending scores and no invented pairs', () => {
+    for (const hero of data.heroes) {
+      const groups = data.getHeroMatchups(hero.slug);
+      for (const [key,field] of [['incoming','target'],['outgoing','counter']]) {
+        expect(groups[key].map(pair => `${pair.counter}:${pair.target}`).sort()).toEqual(
+          data.matchups.filter(pair => pair[field] === hero.slug).map(pair => `${pair.counter}:${pair.target}`).sort(),
+        );
+        expect(groups[key].map(pair => pair.analysis.score)).toEqual(
+          groups[key].map(pair => pair.analysis.score).sort((a,b)=>b-a),
+        );
+      }
+      expect(groups.unverified).toEqual(data.counterGuide.unverifiedCandidates.filter(pair => pair.counter === hero.slug || pair.target === hero.slug));
     }
   });
 });

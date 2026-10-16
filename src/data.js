@@ -53,3 +53,13 @@ export function filterMatchups(query = '') {
     return normalize(`${hero.name} ${hero.title} ${(hero.classes || []).join(' ')}`).includes(search);
   }));
 }
+
+export function getHeroMatchups(slug) {
+  const byScore = (a, b) => b.analysis.score - a.analysis.score ||
+    `${a.counter}:${a.target}`.localeCompare(`${b.counter}:${b.target}`, 'vi');
+  return {
+    incoming: matchups.filter(pair => pair.target === slug).sort(byScore),
+    outgoing: matchups.filter(pair => pair.counter === slug).sort(byScore),
+    unverified: counterGuide.unverifiedCandidates.filter(pair => pair.counter === slug || pair.target === slug),
+  };
+}

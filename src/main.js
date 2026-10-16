@@ -4,6 +4,7 @@ import { glyph } from './icons.js';
 import { createViewMotion } from './motion.js';
 import { renderSeason, renderHeroSeason } from './season.js';
 import { renderHeroWiki } from './wiki.js';
+import { renderHeroMatchups, renderCounterScore, renderMatchupAnalysis, renderScoreMethod } from './matchups.js';
 
 const main = document.querySelector('main');
 const dialog = document.querySelector('#detail');
@@ -54,17 +55,16 @@ function empty() {
   return `<section class="empty"><span class="empty-symbol" aria-hidden="true">${glyph('search')}</span><h2>Chưa tìm thấy kết quả</h2><p>Thử tên khác hoặc xóa bộ lọc để xem toàn bộ cẩm nang.</p><button class="button" data-clear>Xóa bộ lọc</button></section>`;
 }
 function renderCounters() {
-  const list = data.filterMatchups(query).sort((a, b) => {
-    const name = pair => data.heroes.find(hero => hero.slug === pair.counter).name;
-    return sort === 'reverse' ? name(b).localeCompare(name(a), 'vi') : name(a).localeCompare(name(b), 'vi');
-  });
+  const name = pair => data.heroes.find(hero => hero.slug === pair.counter).name;
+  const list = data.filterMatchups(query).sort((a, b) => b.analysis.score - a.analysis.score || (sort === 'reverse' ? name(b).localeCompare(name(a), 'vi') : name(a).localeCompare(name(b), 'vi')));
   const participant = (slug, label) => {
     const hero = data.heroes.find(hero => hero.slug === slug);
     return `<button class="matchup-hero" data-hero="${escape(slug)}" aria-label="Xem tướng ${escape(hero.name)}">${image(portrait(hero), hero.name)}<span><small>${label}</small><strong>${escape(hero.name)}</strong><span>${escape(role(hero))}</span></span></button>`;
   };
-  main.innerHTML = `<div class="content">${header('Chọn tướng. Đổi thế đối đầu.', 'Tìm lựa chọn khắc chế theo bộ kỹ năng, hiểu cách đánh và giới hạn của từng cặp.', 'CẨM NANG KHẮC CHẾ')}
-    <aside class="matchup-notice">${glyph('info')}<div><strong>${data.matchups.length} cặp · đủ ${data.heroes.length} tướng / dạng để tra cứu.</strong><p>Mỗi tướng có ít nhất một phương án đối phó, không phải ma trận mọi cặp đấu. Mũi tên là hướng khắc chế có điều kiện, không phải bảo đảm thắng hay tỷ lệ thắng thực nghiệm.</p><p>Đối chiếu cân bằng 15/10/2026; mô tả và chỉ số CMS có thể chậm cập nhật. Phân tích là nhận định của LiQiDB. <a href="${escape(data.counterGuide.balanceUrl)}" target="_blank" rel="noreferrer">Đọc bản cân bằng chính thức ${glyph('external')}</a></p></div></aside>
-    ${toolbar('cặp đối đầu', list.length)}<div id="results">${list.length ? `<div class="matchup-grid">${list.slice(0,counterLimit).map((pair,index) => `<article class="matchup-card" data-matchup-index="${index}" tabindex="-1"><div class="matchup-pair">${participant(pair.counter, 'Lựa chọn khắc chế')}<span class="matchup-direction">${glyph('arrow')}<span class="sr-only">khắc chế</span></span>${participant(pair.target, 'Tướng đối phương')}</div><div class="matchup-copy"><h2>Vì sao hiệu quả?</h2><p>${escape(pair.reason)}</p><h3>Điều kiện &amp; giới hạn</h3><p>${escape(pair.limitation)}</p><details><summary>Cơ sở kỹ năng &amp; đặc tính</summary><ul>${pair.skillEvidence.map(evidence=>`<li><strong>${escape(data.heroes.find(hero=>hero.slug===evidence.hero).name)} · ${escape(evidence.skillName)}</strong>: ${escape(evidence.interaction)}</li>`).join('')}</ul><p>${escape(pair.specContext)}</p></details><div class="matchup-sources"><span>${pair.basis === 'explicit' ? 'Nguồn phân tích cặp đấu có ghi ngày' : 'Suy luận từ cơ chế, không phải thống kê'} · đối chiếu 16/10/2026</span>${pair.sources.map(source => `<a href="${escape(source.url)}" target="_blank" rel="noreferrer">${escape(source.title)} ${glyph('external')}</a>`).join('')}</div></div></article>`).join('')}</div><div class="counter-more"><p class="data-caption" aria-live="polite">Đang hiển thị ${Math.min(counterLimit,list.length)} / ${list.length} cặp</p>${list.length > counterLimit ? '<button class="button secondary" id="counter-more">Xem thêm 12 cặp</button>' : ''}</div>` : empty()}</div><p class="data-caption">Bộ kỹ năng là cơ sở chọn cách đối phó; chỉ số thiếu hoặc bất thường không được dùng để tính sát thương hay kết luận thắng đấu tay đôi.</p></div>`;
+  main.innerHTML = `<div class="content">${header('Chọn tướng. Hiểu cách đối phó.', 'Phân tích cơ chế, cửa sổ phản ứng và giới hạn của từng cặp đối đầu.', 'CẨM NANG KHẮC CHẾ')}
+    <aside class="matchup-notice">${glyph('info')}<div><strong>${data.matchups.length} phân tích có điểm · ${data.counterGuide.unverifiedCandidates.length} giả thuyết chưa chấm.</strong><p>${escape(data.counterGuide.scope)}</p><p>Mũi tên đi từ lựa chọn khắc chế đến tướng bị đối phó. Điểm là nhận định biên tập, không phải bảo đảm thắng. Xếp theo điểm giảm dần; bộ chọn tên áp dụng khi bằng điểm.</p></div></aside>
+    ${renderScoreMethod(data)}${toolbar('cặp đối đầu', list.length)}<div id="results">${list.length ? `<div class="matchup-grid">${list.slice(0,counterLimit).map((pair,index) => `<article class="matchup-card" data-matchup-index="${index}" data-counter="${escape(pair.counter)}" data-target="${escape(pair.target)}" tabindex="-1"><div class="matchup-pair">${participant(pair.counter, 'Lựa chọn khắc chế')}<span class="matchup-direction">${glyph('arrow')}<span class="sr-only">khắc chế</span></span>${participant(pair.target, 'Tướng đối phương')}</div><div class="matchup-copy">${renderCounterScore(data,pair)}<h2>Vì sao hiệu quả?</h2><p>${escape(pair.reason)}</p><h3>Điều kiện &amp; giới hạn</h3><p>${escape(pair.limitation)}</p>${renderMatchupAnalysis(data,pair)}</div></article>`).join('')}</div><div class="counter-more"><p class="data-caption" aria-live="polite">Đang hiển thị ${Math.min(counterLimit,list.length)} / ${list.length} cặp</p>${list.length > counterLimit ? '<button class="button secondary" id="counter-more">Xem thêm 12 cặp</button>' : ''}</div>` : empty()}</div>
+    <details class="unverified-matchups"><summary>Giả thuyết chưa đủ căn cứ · không phải khuyến nghị</summary><p>Không chấm điểm khi chưa xác minh được tương tác trung tâm. Có thể tra cứu chi tiết trong hồ sơ hai tướng.</p>${data.counterGuide.unverifiedCandidates.map(pair=>`<p><button class="button secondary" data-hero="${escape(pair.target)}">${escape(data.heroes.find(hero=>hero.slug===pair.counter).name)} → ${escape(data.heroes.find(hero=>hero.slug===pair.target).name)}</button> ${escape(pair.analysis.scoreReason)}</p>`).join('')}</details></div>`;
 }
 function renderHeroes() {
   const list = filtered(data.heroes);
@@ -123,12 +123,11 @@ function openHero(slug) {
   const hero = data.heroes.find(h=>h.slug===slug);
   if (!hero) return;
   const lore = data.loreVi?.[hero.slug] || [];
-  const pairs = data.matchups.filter(pair => pair.counter === slug || pair.target === slug);
   dialog.innerHTML = `<button class="close-dialog" aria-label="Đóng chi tiết tướng">${glyph('close')}</button><div class="detail-art">${image(art(hero),hero.name,'',true)}<div class="detail-title"><p class="eyebrow">${escape(role(hero))} &nbsp; / &nbsp; ${escape(hero.lane || 'Athanor')}</p><h1 id="detail-title">${escape(hero.name)}</h1><p>${escape(hero.title)}</p></div></div><div class="detail-body"><section class="detail-section"><h2>Chỉ số cơ bản</h2><div class="stats-grid">${(hero.stats || []).map(s=>`<div><span>${escape(s.label)}</span><strong>${renderValue(s.value)}</strong></div>`).join('') || '<p>Nguồn dữ liệu chưa cung cấp chỉ số cơ bản.</p>'}</div></section><section class="detail-section"><h2>Kỹ năng <small>Nội dung từ nguồn dữ liệu gốc</small></h2><div class="skills">${(hero.skills || []).map(s=>`<article class="skill">${image(s.icon,s.name)}<div><span class="eyebrow">${escape(s.slotLabel)}</span><h3>${escape(s.name)}</h3><p>${escape(s.description)}</p></div></article>`).join('')}</div></section>
   <section class="detail-section"><h2>Trang bị gợi ý</h2>${(hero.build?.itemSets || []).map((set,i)=>`<h3>Bộ trang bị ${i+1}</h3><div class="build-items">${set.map(name=>{const item=data.items.find(it=>normalize(it.name)===normalize(name));return `<div>${item?image(item.icon||item.image,name):''}<span>${escape(name)}</span></div>`}).join('')}</div>`).join('') || '<p>Nguồn dữ liệu chưa có bộ trang bị gợi ý.</p>'}${(hero.build?.notes||[]).map(n=>`<p>${escape(n)}</p>`).join('')}</section><section class="detail-section"><h2>Tiểu sử tướng</h2>${lore.length ? lore.map(paragraph=>`<p class="lore">${escape(paragraph)}</p>`).join('') : '<p>Nguồn dữ liệu chưa có tiểu sử cho tướng này.</p>'}</section>${detailSources(hero.sources)}</div>`;
   const matchups = document.createElement('section');
   matchups.className = 'detail-section hero-matchups';
-  matchups.innerHTML = `<h2>${glyph('counter')} Cặp khắc chế</h2><p>${pairs.length ? `${pairs.length} cặp có phân tích cho ${escape(hero.name)} trong cẩm nang.` : 'Cẩm nang chưa có phân tích cặp đấu cho tướng này.'}</p><a class="button secondary" href="#counters${pairs.length ? `/${escape(slug)}` : ''}">${pairs.length ? 'Xem cặp đối đầu liên quan' : 'Khám phá các cặp đã có'} ${glyph('arrow')}</a>`;
+  matchups.innerHTML = renderHeroMatchups(data, slug);
   dialog.querySelector('.detail-body').prepend(matchups);
   matchups.insertAdjacentHTML('afterend', renderHeroWiki(data, slug));
   const seasonContext = document.createElement('div');
@@ -137,6 +136,7 @@ function openHero(slug) {
   dialog.querySelector('.detail-body').prepend(seasonContext);
   dialog.showModal();
   dialog.scrollTop = 0;
+  dialog.querySelector('.close-dialog').focus({preventScroll:true});
 }
 function humanize(key) {
   return {group:'Loại trang bị',tier:'Cấp',gold:'Giá vàng',stats:'Chỉ số',passives:'Nội tại',rawName:'Tên trong nguồn',color:'Màu ngọc',description:'Mô tả',seasonal:'Theo mùa'}[key] || 'Thông tin bổ sung';
@@ -200,7 +200,8 @@ main.addEventListener('change',event=>{
   }
 });
 dialog.addEventListener('click',event=>{
-  if(event.target.closest('.hero-matchups a')) dialog.close();
+  const hero = event.target.closest('[data-hero]');
+  if(hero) return openHero(hero.dataset.hero);
   if(event.target.closest('.close-dialog, .close-dialog-inline') || event.target === dialog) dialog.close();
   if(event.target.closest('#confirm-reset')) {rankings={};localStorage.removeItem('liqidb-tiers');dialog.close();render();}
 });

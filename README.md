@@ -37,9 +37,10 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
   Tám tướng chưa có trang phù hợp được ghi rõ; không tự ghép thông tin.
 - Meta **S4 2026 — Vết Nứt Thời Không**: 146 bản ghi theo đường cho 129
   tướng / dạng, giữ nguyên tier và điểm tổng hợp từ mẫu TierLQ ngày 11/10/2026.
-- 132 cặp khắc chế có hướng, bao phủ đủ 130 tướng / dạng, giải thích cơ chế,
-  điều kiện, kỹ năng làm cơ sở và liên kết nguồn.
-  Tìm theo tên một trong hai tướng hoặc mở từ thông tin chi tiết.
+- 113 cặp đối phó có hướng, chấm điểm biên tập 1–5 theo cơ chế và tình huống;
+  19 giả thuyết thiếu chứng cứ được tách riêng, không chấm điểm.
+  Hồ sơ tướng có hai hướng: ai khắc chế tướng này và tướng này khắc chế ai,
+  kèm điều kiện, nhịp thực hiện, cách phản ứng và nguồn cho cả hai bộ kỹ năng.
 - 148 build theo tướng và đường từ TierLQ: trang bị, ngọc và phép bổ trợ.
 - Tìm kiếm không dấu, lọc vai trò và sắp xếp tên theo tiếng Việt.
 - 112 trang bị, 88 ngọc và 9 phép bổ trợ với thông tin chi tiết.
@@ -120,6 +121,6 @@ chạy `npm run data`, kiểm tra thay đổi rồi nhập các bộ dữ liệu
 Ghi ngày thực tế và nguồn trong `meta.json`; không đổi ngày để giả lập dữ liệu mới.
 Cặp khắc chế là nội dung biên tập riêng trong `counters.json`, không bị ghi đè
 khi thu thập nguồn. Các cặp có đối chiếu cân bằng 15/10/2026; không so sát thương
-bằng chỉ số CMS thiếu hoặc bất thường. Hai cặp tuyển chọn từ bài năm 2023 vẫn
-ghi rõ ngày. `season-meta.json` và `reference-builds.json` lưu riêng commit,
+bằng chỉ số CMS thiếu hoặc bất thường. Không suy điểm từ số cặp hoặc tier và
+không thêm cặp để đủ số lượng. `season-meta.json` và `reference-builds.json` lưu riêng commit,
 hàm băm và ngày mẫu của TierLQ; không đổi ngày mẫu theo ngày tải dữ liệu.

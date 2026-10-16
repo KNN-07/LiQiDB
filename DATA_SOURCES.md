@@ -157,15 +157,22 @@ heroes, international-kit assumptions or generated content.
 `public/data/counters.json` is original Vietnamese editorial content, separate
 from the crawled collections. It records review date, directed `counter` and
 `target` hero slugs, a mechanism, limitations, evidence type and per-pair URLs.
-There are 132 directed pairs, covering all 130 hero/form slugs as targets.
-130 are LiQiDB inferences from official ability descriptions, checked against
-the September 29 baseline and October 15, 2026 balance notes. The distinct
-Alice → Aleister and Thane → Grakk selections from Sforum's September 6, 2023
-article are retained with their historical attribution.
+All 132 previous selections were reassessed using revision-attributed Vietnamese
+wiki skill descriptions and the September 29 / October 15, 2026 official patches.
+113 are supported conditional recommendations; 19 are unverified candidates
+outside `pairs`, with null scores. The old roster-coverage quota is removed.
+Missing wiki kits, disputed mark cleansing (Chaugnar → D'Arcy), and the proposed
+Ata wall / Bijan vehicle collision do not become recommendations by inference.
+The historical Alice → Aleister selection is also unrated, not carried forward
+as proof that ordinary crowd control always interrupts suppression.
 
-Every pair includes exact hero/skill-slot/name references, an explanation of
-the interaction, a limitation, qualitative role/range/damage context and URLs.
-All 130 targets and all referenced skill identities are checked by tests.
+Every assessment identifies the target action, response, causal link, setup,
+sequence, resource cost, counterplay, score rationale, ceiling and version limits.
+Evidence references both heroes and exact wiki revision IDs where available.
+Tests enforce directions, score/status separation and revision mappings.
+Scores use an anchored editorial ordinal 1–5 scale, not additive arithmetic,
+counts, tier or win percentages; confidence describes evidence separately.
+No current assessment reaches 4–5. The game client was not experimentally tested.
 Missing or implausible CMS stats are not treated as current numerical evidence.
 These are conditional editorial recommendations, not measured matchup win
 rates, an exhaustive matchup matrix or official Garena counter endorsements.
@@ -174,7 +181,8 @@ it to independent skill 4. The UI warns about that mismatch rather than
 silently rewriting the source kit. Triệu Vân's new untargeted dash and the
 other October 15 changes are included in the reasoning.
 
-The browser exports `counterGuide`, `matchups` and `filterMatchups(query)`.
+The browser exports `counterGuide`, `matchups`, `filterMatchups(query)` and
+`getHeroMatchups(slug)` with score-sorted incoming/outgoing groups.
 Search accepts either hero's name/title/class without reversing direction.
 The source URLs and date are shipped with every card; official pages generally
 do not state their last skill-update date.
