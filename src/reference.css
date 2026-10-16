@@ -102,6 +102,31 @@ h1{font-weight:300;letter-spacing:.08em;text-transform:uppercase}
 .matchup-analysis li{margin-block:8px}.matchup-evidence{padding-left:20px}
 .matchup-evidence a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 .matchup-limit{color:var(--muted)}
+.counter-mode{display:block;max-width:440px;margin-bottom:24px}
+.graph-overview{margin-block:24px}
+.graph-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-block:24px}
+.graph-filters select,.counter-mode select{width:100%}
+.graph-card{padding:24px}
+.graph-pair-heading{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.graph-pair-heading button{white-space:normal;text-align:left}
+.graph-status{font-weight:600;color:var(--ink)}
+.graph-card .graph-status{margin-top:16px}
+.graph-grade strong{font-size:24px;color:var(--accent)}
+.graph-grade{color:var(--muted)}
+.graph-detail>h1{padding-right:48px;font:500 24px/1.5 var(--body)!important;letter-spacing:0!important;text-transform:none}
+.graph-detail section{margin-top:32px}
+.graph-path{border-top:1px solid var(--line);padding-block:24px}
+.graph-path h3{font:600 20px/1.6 var(--body)}
+.graph-path h4{margin-top:24px}
+.graph-evidence{padding-left:20px;overflow-wrap:anywhere}
+.graph-evidence blockquote{margin:12px 0;color:var(--ink)}
+.graph-evidence>li{padding-block:16px}
+.graph-evidence a,.graph-detail a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.graph-compact{list-style:none;padding:0}
+.graph-compact li{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-block:16px}
+.graph-compact button{white-space:normal;text-align:left}
+.graph-compact span{font-size:13px;color:var(--muted)}
+.hero-graph{margin-top:32px}
 footer{padding-inline:16px}
 footer p a{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:1200px) and (min-width:761px){
@@ -109,6 +134,8 @@ footer p a{text-decoration:underline;text-underline-offset:3px}
   .site-header nav{order:3;width:100%;justify-content:center}
 }
 @media(max-width:760px){
+  .graph-filters{grid-template-columns:minmax(0,1fr)}
+  .graph-card{padding:20px}
   .content{padding-inline:16px}.site-header{padding:16px 16px 0}
   .site-header nav{grid-template-columns:repeat(4,minmax(0,1fr))}
   .site-header nav a{font-family:var(--body);font-size:11px;letter-spacing:0;padding-inline:4px}

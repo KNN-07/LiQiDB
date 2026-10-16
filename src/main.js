@@ -5,6 +5,7 @@ import { createViewMotion } from './motion.js';
 import { renderSeason, renderHeroSeason } from './season.js';
 import { renderHeroWiki } from './wiki.js';
 import { renderHeroMatchups, renderCounterScore, renderMatchupAnalysis, renderScoreMethod } from './matchups.js';
+import { renderGraphBrowser, renderGraphDetail, renderHeroGraph } from './graph-view.js';
 
 const main = document.querySelector('main');
 const dialog = document.querySelector('#detail');
@@ -17,6 +18,8 @@ const normalize = value => data.normalize(value);
 const readStored = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 let data, query = '', selectedRole = 'All', sort = 'name';
 let counterLimit = 12, catalogSource = 'snapshot';
+let counterMode = 'reviewed';
+const graphState = {counter:'',target:'',status:'inferred'};
 const seasonState = { lane: 'all', className: 'All', trend: 'all', spotlight: 'top' };
 let rankings = readStored('liqidb-tiers', {});
 const tiers = ['S', 'A', 'B', 'C', 'D'];
@@ -55,6 +58,11 @@ function empty() {
   return `<section class="empty"><span class="empty-symbol" aria-hidden="true">${glyph('search')}</span><h2>Chưa tìm thấy kết quả</h2><p>Thử tên khác hoặc xóa bộ lọc để xem toàn bộ cẩm nang.</p><button class="button" data-clear>Xóa bộ lọc</button></section>`;
 }
 function renderCounters() {
+  const modeControl = `<label class="sort counter-mode"><span>Cách tra cứu</span><select id="counter-mode"><option value="reviewed"${counterMode==='reviewed'?' selected':''}>Phân tích đã đối chiếu</option><option value="graph"${counterMode==='graph'?' selected':''}>Đồ thị cơ chế</option></select></label>`;
+  if(counterMode==='graph') {
+    main.innerHTML = `<div class="content">${header('Mọi đối thủ. Từng cơ chế.', 'Tra đường suy luận có nguồn, xem cả tương tác hỗ trợ và phản ứng ngược.', 'CẨM NANG KHẮC CHẾ')}${modeControl}${renderGraphBrowser(data,query,graphState,counterLimit,toolbar,sort)}</div>`;
+    return;
+  }
   const name = pair => data.heroes.find(hero => hero.slug === pair.counter).name;
   const list = data.filterMatchups(query).sort((a, b) => b.analysis.score - a.analysis.score || (sort === 'reverse' ? name(b).localeCompare(name(a), 'vi') : name(a).localeCompare(name(b), 'vi')));
   const participant = (slug, label) => {
@@ -63,7 +71,7 @@ function renderCounters() {
   };
   main.innerHTML = `<div class="content">${header('Chọn tướng. Hiểu cách đối phó.', 'Phân tích cơ chế, cửa sổ phản ứng và giới hạn của từng cặp đối đầu.', 'CẨM NANG KHẮC CHẾ')}
     <aside class="matchup-notice">${glyph('info')}<div><strong>${data.matchups.length} phân tích có điểm · ${data.counterGuide.unverifiedCandidates.length} giả thuyết chưa chấm.</strong><p>${escape(data.counterGuide.scope)}</p><p>Mũi tên đi từ lựa chọn khắc chế đến tướng bị đối phó. Điểm là nhận định biên tập, không phải bảo đảm thắng. Xếp theo điểm giảm dần; bộ chọn tên áp dụng khi bằng điểm.</p></div></aside>
-    ${renderScoreMethod(data)}${toolbar('cặp đối đầu', list.length)}<div id="results">${list.length ? `<div class="matchup-grid">${list.slice(0,counterLimit).map((pair,index) => `<article class="matchup-card" data-matchup-index="${index}" data-counter="${escape(pair.counter)}" data-target="${escape(pair.target)}" tabindex="-1"><div class="matchup-pair">${participant(pair.counter, 'Lựa chọn khắc chế')}<span class="matchup-direction">${glyph('arrow')}<span class="sr-only">khắc chế</span></span>${participant(pair.target, 'Tướng đối phương')}</div><div class="matchup-copy">${renderCounterScore(data,pair)}<h2>Vì sao hiệu quả?</h2><p>${escape(pair.reason)}</p><h3>Điều kiện &amp; giới hạn</h3><p>${escape(pair.limitation)}</p>${renderMatchupAnalysis(data,pair)}</div></article>`).join('')}</div><div class="counter-more"><p class="data-caption" aria-live="polite">Đang hiển thị ${Math.min(counterLimit,list.length)} / ${list.length} cặp</p>${list.length > counterLimit ? '<button class="button secondary" id="counter-more">Xem thêm 12 cặp</button>' : ''}</div>` : empty()}</div>
+    ${modeControl}${renderScoreMethod(data)}${toolbar('cặp đối đầu', list.length)}<div id="results">${list.length ? `<div class="matchup-grid">${list.slice(0,counterLimit).map((pair,index) => `<article class="matchup-card" data-matchup-index="${index}" data-counter="${escape(pair.counter)}" data-target="${escape(pair.target)}" tabindex="-1"><div class="matchup-pair">${participant(pair.counter, 'Lựa chọn khắc chế')}<span class="matchup-direction">${glyph('arrow')}<span class="sr-only">khắc chế</span></span>${participant(pair.target, 'Tướng đối phương')}</div><div class="matchup-copy">${renderCounterScore(data,pair)}<h2>Vì sao hiệu quả?</h2><p>${escape(pair.reason)}</p><h3>Điều kiện &amp; giới hạn</h3><p>${escape(pair.limitation)}</p>${renderMatchupAnalysis(data,pair)}</div></article>`).join('')}</div><div class="counter-more"><p class="data-caption" aria-live="polite">Đang hiển thị ${Math.min(counterLimit,list.length)} / ${list.length} cặp</p>${list.length > counterLimit ? '<button class="button secondary" id="counter-more">Xem thêm 12 cặp</button>' : ''}</div>` : empty()}</div>
     <details class="unverified-matchups"><summary>Giả thuyết chưa đủ căn cứ · không phải khuyến nghị</summary><p>Không chấm điểm khi chưa xác minh được tương tác trung tâm. Có thể tra cứu chi tiết trong hồ sơ hai tướng.</p>${data.counterGuide.unverifiedCandidates.map(pair=>`<p><button class="button secondary" data-hero="${escape(pair.target)}">${escape(data.heroes.find(hero=>hero.slug===pair.counter).name)} → ${escape(data.heroes.find(hero=>hero.slug===pair.target).name)}</button> ${escape(pair.analysis.scoreReason)}</p>`).join('')}</details></div>`;
 }
 function renderHeroes() {
@@ -127,7 +135,7 @@ function openHero(slug) {
   <section class="detail-section"><h2>Trang bị gợi ý</h2>${(hero.build?.itemSets || []).map((set,i)=>`<h3>Bộ trang bị ${i+1}</h3><div class="build-items">${set.map(name=>{const item=data.items.find(it=>normalize(it.name)===normalize(name));return `<div>${item?image(item.icon||item.image,name):''}<span>${escape(name)}</span></div>`}).join('')}</div>`).join('') || '<p>Nguồn dữ liệu chưa có bộ trang bị gợi ý.</p>'}${(hero.build?.notes||[]).map(n=>`<p>${escape(n)}</p>`).join('')}</section><section class="detail-section"><h2>Tiểu sử tướng</h2>${lore.length ? lore.map(paragraph=>`<p class="lore">${escape(paragraph)}</p>`).join('') : '<p>Nguồn dữ liệu chưa có tiểu sử cho tướng này.</p>'}</section>${detailSources(hero.sources)}</div>`;
   const matchups = document.createElement('section');
   matchups.className = 'detail-section hero-matchups';
-  matchups.innerHTML = renderHeroMatchups(data, slug);
+  matchups.innerHTML = renderHeroMatchups(data, slug) + renderHeroGraph(data, slug);
   dialog.querySelector('.detail-body').prepend(matchups);
   matchups.insertAdjacentHTML('afterend', renderHeroWiki(data, slug));
   const seasonContext = document.createElement('div');
@@ -140,6 +148,13 @@ function openHero(slug) {
 }
 function humanize(key) {
   return {group:'Loại trang bị',tier:'Cấp',gold:'Giá vàng',stats:'Chỉ số',passives:'Nội tại',rawName:'Tên trong nguồn',color:'Màu ngọc',description:'Mô tả',seasonal:'Theo mùa'}[key] || 'Thông tin bổ sung';
+}
+function openGraphPair(key) {
+  const [counter,target] = key.split(':');
+  dialog.innerHTML = `<button class="close-dialog" aria-label="Đóng phân tích cơ chế">${glyph('close')}</button><div class="detail-body graph-detail">${renderGraphDetail(data,counter,target)}</div>`;
+  dialog.showModal();
+  dialog.scrollTop=0;
+  dialog.querySelector('.close-dialog').focus({preventScroll:true});
 }
 function renderValue(value) {
   if (typeof value === 'boolean') return value ? 'Có' : 'Không';
@@ -158,6 +173,11 @@ function openRecord(index) {
   dialog.scrollTop = 0;
 }
 main.addEventListener('click',event=>{
+  const graphPair = event.target.closest('[data-graph-pair]');
+  if(graphPair) return openGraphPair(graphPair.dataset.graphPair);
+  if(event.target.closest('#graph-reset')) {
+    query='';graphState.counter='';graphState.target='';graphState.status='inferred';counterLimit=12;render();document.querySelector('#graph-reset').focus({preventScroll:true});return;
+  }
   const jump = event.target.closest('[data-season-jump]');
   if(jump) document.querySelector(jump.dataset.seasonJump === 'method' ? '#season-method' : '#season-board').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
 
@@ -189,6 +209,8 @@ main.addEventListener('input',event=>{
   const position=event.target.selectionStart;query=event.target.value;counterLimit=12;render();const input=document.querySelector('#search');input.focus();input.setSelectionRange(position,position);
 });
 main.addEventListener('change',event=>{
+  if(event.target.id==='counter-mode') {counterMode=event.target.value;counterLimit=12;render();document.querySelector('#counter-mode').focus({preventScroll:true});}
+  if(['graph-counter','graph-target','graph-status'].includes(event.target.id)) {const id=event.target.id;graphState[id.slice(6)]=event.target.value;counterLimit=12;render();document.querySelector(`#${id}`).focus({preventScroll:true});}
   if(event.target.id==='catalog-source') {catalogSource=event.target.value;query='';render();document.querySelector('#catalog-source').focus({preventScroll:true});}
   if(event.target.id==='season-class'||event.target.id==='season-trend') { const id=event.target.id;seasonState[id==='season-class'?'className':'trend']=event.target.value;render();document.querySelector(`#${id}`).focus({preventScroll:true}); }
   if(event.target.id==='sort') { sort=event.target.value;render();document.querySelector('#sort').focus({preventScroll:true}); }
@@ -200,6 +222,13 @@ main.addEventListener('change',event=>{
   }
 });
 dialog.addEventListener('click',event=>{
+  const graphPair = event.target.closest('[data-graph-pair]');
+  if(graphPair) return openGraphPair(graphPair.dataset.graphPair);
+  const graphOpen = event.target.closest('[data-graph-open]');
+  if(graphOpen) {
+    counterMode='graph';graphState.counter=graphOpen.dataset.graphOpen;graphState.target='';graphState.status='all';counterLimit=12;dialog.close();
+    if(location.hash===graphOpen.hash) {routeQuery();render();}
+  }
   const hero = event.target.closest('[data-hero]');
   if(hero) return openHero(hero.dataset.hero);
   if(event.target.closest('.close-dialog, .close-dialog-inline') || event.target === dialog) dialog.close();

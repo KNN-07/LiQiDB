@@ -41,6 +41,11 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
   19 giả thuyết thiếu chứng cứ được tách riêng, không chấm điểm.
   Hồ sơ tướng có hai hướng: ai khắc chế tướng này và tướng này khắc chế ai,
   kèm điều kiện, nhịp thực hiện, cách phản ứng và nguồn cho cả hai bộ kỹ năng.
+- Đồ thị cơ chế xét đủ **16.770 hướng đối đầu** (`130 × 129`, không tự đấu).
+  Chuyển “Cách tra cứu” trong mục Khắc chế để lọc hai tướng và trạng thái:
+  đã đối chiếu, ứng viên suy luận hoặc chưa có căn cứ. Hồ sơ tướng cũng có
+  các ứng viên theo cả hai chiều. Mỗi đường suy luận dẫn về kỹ năng, quy tắc,
+  điều kiện và phản ứng ngược; không suy khắc chế bắc cầu hay lấy số cạnh làm điểm.
 - 148 build theo tướng và đường từ TierLQ: trang bị, ngọc và phép bổ trợ.
 - Tìm kiếm không dấu, lọc vai trò và sắp xếp tên theo tiếng Việt.
 - 112 trang bị, 88 ngọc và 9 phép bổ trợ với thông tin chi tiết.
@@ -58,6 +63,9 @@ Trang hiển thị riêng các thay đổi mới, không giả lập tier đã t
 Evita chưa có tier từ nguồn. Số liệu giải đấu là mẫu do nguồn công bố,
 không phải tỷ lệ thắng xếp hạng toàn máy chủ. Các cặp khắc chế là suy luận
 biên tập có điều kiện, không phải kết quả đo tỷ lệ thắng.
+Điểm của ứng viên đồ thị chỉ mô tả một tương tác có điều kiện, không phải
+sức mạnh tổng thể của cặp. Không có quy tắc khớp nghĩa là chưa biết, không phải
+cân bằng. Mô tả wiki chưa đầy đủ hoặc đã đổi không được tự điền từ suy đoán.
 
 Bảng xếp hạng cá nhân phản ánh đánh giá của bạn, **không phải** xếp hạng thi đấu hay
 tỷ lệ thắng thực tế. Bảng được lưu trên thiết bị của bạn; hãy tải tệp JSON để

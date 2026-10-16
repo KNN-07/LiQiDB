@@ -131,3 +131,24 @@ dividers, 24px section titles and 16/24px gaps. No new motion or palette.
   scenario and confidence. No percentage, progress bar or count-derived grade.
   Unresolved causal interactions are unranked and separated from recommendations.
   Every score exposes its justification and why the next anchor is unsupported.
+
+## 12. Mechanics graph
+
+Reuse the existing square counter cards, labelled selects, native disclosures,
+dialog and neutral dividers; add no palette or motion rules. The counter view
+offers "Phân tích đã đối chiếu" and "Đồ thị cơ chế" as a labelled source selector.
+Graph controls select the responding hero, opponent and evidence status.
+Results render twelve cards at a time, never the complete matrix as DOM.
+
+- States use visible text: reviewed, automatically inferred, unknown, and
+  changed/missing source. Generated candidates never inherit reviewed confidence.
+- A compact graph card names both directions, the interaction-level ordinal
+  anchor and whether opposing evidence exists. Counts describe coverage only.
+- The existing dialog opens the full path from each hero's cited skill through
+  a named rule, conditions, cost, counterplay and exclusions. Opposing paths have
+  a separate heading, not a hidden subtraction or win-rate calculation.
+- Hero dialogs retain reviewed incoming/outgoing lists, then a native disclosure
+  of generated incoming/outgoing candidates. Six compact candidates per direction
+  are visible when opened, with the rest in a nested native disclosure.
+- Unknown lookup offers the source gap and any opposing evidence; it never says
+  neutral or 0/5. Both Flowborn forms retain their role labels in every selector.

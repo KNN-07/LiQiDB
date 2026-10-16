@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "bun scripts/build-matchup-graph.mjs --check && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "bun test",
-    "data:sync": "bun scripts/sync-data.mjs"
+    "data:sync": "bun scripts/sync-data.mjs",
+    "data:graph": "bun scripts/build-matchup-graph.mjs --patch"
   },
   "devDependencies": {
     "vite": "^7.1.0"

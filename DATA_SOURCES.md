@@ -187,6 +187,46 @@ Search accepts either hero's name/title/class without reversing direction.
 The source URLs and date are shipped with every card; official pages generally
 do not state their last skill-update date.
 
+## Mechanics graph and generated coverage
+
+`hero-mechanics.json` stores curated, exact-substring facts from individual
+revisioned skill-table rows, with activation conditions and typed recipient,
+named-opponent, removable-control and immunity-scope guards. All 130 mappings
+exist; absent or incomplete skill tables are explicit, not inferred from lore.
+The original wiki, hero, patch and reviewed-counter snapshots remain unchanged.
+
+`mechanics-rules.json` contains direct effect/action rules, exclusions, costs,
+counterplay and ordinal anchors. General vision does not imply stealth detection;
+untargetability does not imply damage immunity; slow-only immunity does not
+become stun immunity; ordinary cleanse never becomes suppression removal.
+Ally-only protection does not become the caster's personal immunity.
+
+`scripts/mechanics-engine.mjs` joins hero → ability → fact → rule → opponent
+action, never hero → countered hero → another hero. Matching skills are grouped
+under one causal rule. The strongest applicable rule supplies the interaction
+anchor, not a sum of tags or graph degree. All automatic candidates currently
+use 2/5 and low confidence; this is not a net matchup score or win percentage.
+Reverse-direction evidence is displayed separately rather than subtracted.
+
+`matchup-graph.json` contains every 130 × 129 directed non-self pair as a compact
+tuple: counter index, target index, reviewed-counter index (-1 if absent), and
+interaction indexes. Slugs, facts and interactions are stored once and referenced.
+The client decodes reviewed / inferred / unknown status. Unknown never means
+neutral. Existing unverified hypotheses remain unverified even when another
+independent rule matches the same two heroes.
+
+Facts bind to wiki revision/render hash and that hero's official patch entries.
+A source or patch change deactivates affected facts and related reviewed edges
+until checked again; unrelated kits remain usable. This detects changed inputs,
+not an upstream mistake that has not changed. Game-client experiments, exact
+combo simulation and empirical outcome calibration have not been performed.
+
+After reviewing source changes, update the curated facts/signatures, then run
+`bun run data:graph` to print an apply_patch payload for the generated snapshot.
+Apply and review that patch. `bun run build` checks exact regeneration before
+building; tests cover typed exceptions, deduplication, non-transitivity, source
+invalidation, provenance and complete directed coverage.
+
 ## TierLQ seasonal reference
 
 `public/data/season-meta.json` and `reference-builds.json` import factual
