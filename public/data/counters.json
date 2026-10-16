@@ -1,0 +1,142 @@
+{
+  "locale": "vi",
+  "reviewedAt": "2026-10-16",
+  "scope": "Tuyển chọn cặp đấu có hướng; không phải dữ liệu tỷ lệ thắng hay meta hiện hành. Phân tích cơ chế là nhận định của LiQiDB, không phải xác nhận cặp đấu của Garena.",
+  "pairs": [
+    {
+      "counter": "chaugnar",
+      "target": "grakk",
+      "basis": "explicit",
+      "reason": "Giữ Vực hỗn loạn để mở trói cho đồng đội khi Grakk dùng Nuốt Chửng, tạo cơ hội thoát chuỗi khống chế.",
+      "limitation": "Khắc chế công cụ bắt người, không bảo đảm thắng giao tranh. Giải khống chế không hoàn tác vị trí đã bị kéo.",
+      "sources": [
+        {
+          "title": "Sforum · phân tích ngày 06/09/2023",
+          "url": "https://cellphones.com.vn/sforum/5-tuong-lien-quan-nen-cam-khi-rank"
+        },
+        {
+          "title": "Garena · Chaugnar",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/chaugnar/"
+        },
+        {
+          "title": "Garena · Grakk",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/grakk/"
+        }
+      ]
+    },
+    {
+      "counter": "alice",
+      "target": "aleister",
+      "basis": "explicit",
+      "reason": "Dùng Vụ nổ thời không làm choáng Aleister khi hắn đang niệm Ngục tù vĩnh hằng để cứu đồng đội bị bắt.",
+      "limitation": "Alice phải còn khả năng hành động và đánh trúng Aleister. Đây không phải cách tự thoát khi chính Alice đang bị trói.",
+      "sources": [
+        {
+          "title": "Sforum · phân tích ngày 06/09/2023",
+          "url": "https://cellphones.com.vn/sforum/5-tuong-lien-quan-nen-cam-khi-rank"
+        },
+        {
+          "title": "Garena · Alice",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/alice/"
+        },
+        {
+          "title": "Garena · Aleister",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/aleister/"
+        }
+      ]
+    },
+    {
+      "counter": "thane",
+      "target": "grakk",
+      "basis": "explicit",
+      "reason": "Đứng chắn hướng kéo bằng Thane để giảm nguy cơ chủ lực bị bắt. Khi còn kỹ năng, dùng Xung phong đẩy lùi để phản giao tranh.",
+      "limitation": "Chắn kéo không đồng nghĩa miễn khống chế. Khả năng phản mở phụ thuộc việc Thane còn ra chiêu được.",
+      "sources": [
+        {
+          "title": "Sforum · phân tích ngày 06/09/2023",
+          "url": "https://cellphones.com.vn/sforum/5-tuong-lien-quan-nen-cam-khi-rank"
+        },
+        {
+          "title": "Garena · Thane",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/thane/"
+        },
+        {
+          "title": "Garena · Grakk",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/grakk/"
+        }
+      ]
+    },
+    {
+      "counter": "max",
+      "target": "taara",
+      "basis": "mechanics",
+      "reason": "Gây sát thương để đặt Điện tích lên Taara, hạn chế lượng hồi phục giúp cô trụ lâu với Thân thể thép.",
+      "limitation": "Giảm hồi phục, không phải cấm hồi máu hoàn toàn. Trang tướng và ghi chú cân bằng có thể khác phiên bản; cẩm nang không gán phần trăm giảm hồi phục.",
+      "sources": [
+        {
+          "title": "Garena · Max",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/max/"
+        },
+        {
+          "title": "Garena · Taara",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/taara/"
+        },
+        {
+          "title": "Garena · cân bằng 05/02/2026",
+          "url": "https://lienquan.garena.vn/dieu-chinh-giua-mua-pb-tan-nien-khoi-the-05-02-2026/"
+        }
+      ]
+    },
+    {
+      "counter": "max",
+      "target": "lu-bo",
+      "basis": "mechanics",
+      "reason": "Duy trì Điện tích khi Lữ Bố bật Chiến thần để giảm lợi ích hồi máu từ đòn đánh và kỹ năng trúng đích.",
+      "limitation": "Điện tích không xóa tăng công hay kháng hiệu ứng của Chiến thần. Cặp này chỉ khai thác khả năng hạn chế hồi phục.",
+      "sources": [
+        {
+          "title": "Garena · Max",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/max/"
+        },
+        {
+          "title": "Garena · Lữ Bố",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/lu-bo/"
+        }
+      ]
+    },
+    {
+      "counter": "chaugnar",
+      "target": "gildur",
+      "basis": "mechanics",
+      "reason": "Dùng Vực hỗn loạn mở trói cho đồng đội bị Vương quốc vàng giữ lại, tạo cơ hội rời vùng khống chế của Gildur.",
+      "limitation": "Giải khống chế không hủy niệm chiêu của Gildur. Đứng lại trong vùng vẫn có nguy cơ chịu những lần làm choáng tiếp theo.",
+      "sources": [
+        {
+          "title": "Garena · Chaugnar",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/chaugnar/"
+        },
+        {
+          "title": "Garena · Gildur",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/gildur/"
+        }
+      ]
+    },
+    {
+      "counter": "arum",
+      "target": "nakroth",
+      "basis": "mechanics",
+      "reason": "Giữ Thú khốn cho lúc Nakroth lao vào để khóa khả năng di chuyển, tạo thời gian cho đồng đội tập trung xử lý.",
+      "limitation": "Arum cũng bất động và chia sẻ sát thương với mục tiêu. Cần bắt trúng và có đồng đội hỗ trợ; không đồng nghĩa thắng mọi pha đấu tay đôi.",
+      "sources": [
+        {
+          "title": "Garena · Arum",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/arum/"
+        },
+        {
+          "title": "Garena · Nakroth",
+          "url": "https://lienquan.garena.vn/hoc-vien/tuong-skin/d/nakroth/"
+        }
+      ]
+    }
+  ]
+}

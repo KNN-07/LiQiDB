@@ -4,10 +4,11 @@ async function load(name) {
   return response.json();
 }
 
-export const [heroes, items, runes, spells, meta, loreTranslation] = await Promise.all(
-  ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi'].map(load),
+export const [heroes, items, runes, spells, meta, loreTranslation, counterGuide] = await Promise.all(
+  ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters'].map(load),
 );
 export const loreVi = loreTranslation.heroes;
+export const matchups = counterGuide.pairs;
 
 export const roles = {
   'Sát thủ': 'Assassin',
@@ -43,4 +44,12 @@ export function filterRecords(records, query, className = 'All') {
 export function getArtwork(hero) {
   return hero.skins?.[0]?.splash || hero.skins?.[0]?.thumb ||
     hero.thumb || hero.image || hero.icon || hero.portrait || '';
+}
+
+export function filterMatchups(query = '') {
+  const search = normalize(query);
+  return matchups.filter(pair => [pair.counter, pair.target].some(slug => {
+    const hero = heroes.find(hero => hero.slug === slug);
+    return normalize(`${hero.name} ${hero.title} ${(hero.classes || []).join(' ')}`).includes(search);
+  }));
 }

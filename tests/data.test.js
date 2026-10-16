@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, test } from 'bun:test';
 import { readFile } from 'node:fs/promises';
 
-const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi'];
+const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi', 'counters'];
 const snapshots = Object.fromEntries(await Promise.all(names.map(async (name) => [
   name,
   JSON.parse(await readFile(new URL(`../public/data/${name}.json`, import.meta.url), 'utf8')),
@@ -32,7 +32,7 @@ afterAll(() => server.stop(true));
 describe('pinned data integrity', () => {
   test('loads every collection without dropping record fields', () => {
     expect(requested.sort()).toEqual(
-      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi'].map((name) => `./data/${name}.json`).sort(),
+      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters'].map((name) => `./data/${name}.json`).sort(),
     );
     for (const name of ['heroes', 'items', 'runes', 'spells']) {
       expect(data[name]).toEqual(snapshots[name]);
@@ -84,6 +84,37 @@ describe('Vietnamese lore snapshot', () => {
         typeof paragraph === 'string' && paragraph.trim().length > 0,
       )).toBe(true);
     }
+  });
+});
+
+describe('curated counter-pick guide', () => {
+  test('retains directed valid hero pairs and source provenance', () => {
+    expect(data.counterGuide).toEqual(snapshots.counters);
+    expect(data.counterGuide.locale).toBe('vi');
+    expect(Number.isFinite(Date.parse(data.counterGuide.reviewedAt))).toBe(true);
+    expect(data.matchups.length).toBeGreaterThan(0);
+    expect(new Set(data.matchups.map(pair => `${pair.counter}:${pair.target}`)).size).toBe(data.matchups.length);
+    const slugs = new Set(data.heroes.map(hero => hero.slug));
+    for (const pair of data.matchups) {
+      expect(slugs.has(pair.counter)).toBe(true);
+      expect(slugs.has(pair.target)).toBe(true);
+      expect(pair.counter).not.toBe(pair.target);
+      expect(['explicit', 'mechanics']).toContain(pair.basis);
+      expect(pair.reason.trim().length).toBeGreaterThan(0);
+      expect(pair.limitation.trim().length).toBeGreaterThan(0);
+      expect(pair.sources.length).toBeGreaterThanOrEqual(2);
+      for (const source of pair.sources) expect(new URL(source.url).protocol).toBe('https:');
+    }
+  });
+
+  test('finds either participant without reversing matchup direction', () => {
+    const pair = data.matchups.find(pair => pair.target === 'lu-bo');
+    expect(pair).toBeDefined();
+    expect(data.filterMatchups('LỮ BỐ')).toContain(pair);
+    expect(data.filterMatchups('lu bo')).toContain(pair);
+    expect(data.filterMatchups(data.heroes.find(hero => hero.slug === pair.counter).name)).toContain(pair);
+    expect(data.filterMatchups('')).toEqual(data.matchups);
+    expect(data.filterMatchups('no-such-matchup')).toEqual([]);
   });
 });
 

@@ -29,12 +29,14 @@ Primary Arial/Helvetica sans-serif; editorial display Georgia serif. Display 56p
 - Detail dialog: native dialog, labelled title, close button, focus restored, Escape supported; hero image, stats, skills, build, lore, source links. One dialog only. Native starting-style/allow-discrete transitions preserve top-layer exit while close/focus state updates immediately. Record detail uses an icon/title header, compact fact grid, and full description/stat/passive sections; long lore has paragraph spacing.
 - Tier row: rank label and wrapping heroes; each hero has labelled rank select. Unranked pool and ranked rows share card primitive. Local persistence and export, explicit empty states.
 - Empty state: title, reason and clear-filter action.
+- Counter-pick guide: a sixth Vietnamese navigation destination, "Khắc chế". Directed pair cards place the counter on the left and target on the right with an explicit arrow and labels; two columns on desktop, one on phones. Each card includes a mechanism, limitation and source links. Hero names are buttons that open existing detail dialogs. A hero detail links to its matching pairs; missing coverage says so rather than implying a complete matchup database.
+- Icons: locally bundled, individually imported Font Awesome Free solid SVGs replace decorative Unicode symbols. Icons inherit currentColor, use a 1em box and are hidden from assistive technology; visible text and accessible names retain meaning. Navigation labels remain visible; the six destinations wrap into a three-column phone grid.
 
 ## 6. Motion & Interaction
 User approved retaining navy/gold on October 16, 2026.
 
 - Tokens: micro 160ms, standard 260ms, entry 480ms, stagger 32ms, easing cubic-bezier(.22,1,.36,1).
-- Route arrival: intro/feature briefly rise 12px while fading; visible cards stagger by 32ms, at most six delays. IntersectionObserver triggers each card once, then disconnects it. Source mechanism: beui tabs content arrival; adapted to native Web Animations, no dependency.
+- Route arrival: intro/feature briefly rise 12px while fading; visible cards stagger by 32ms, at most six delays. IntersectionObserver triggers each card once, then disconnects it. Source mechanism: beui tabs content arrival; implemented with bundled Anime.js, including pair cards. Anime.js owns only entry opacity/translation; completed/interrupted instances revert inline styles so CSS hover/press continues working. Render, focused cards and preference changes dispose owned instances.
 - Search/sort/filter changes stay immediate and do not restart entrance animations. Focus cancels a card's reveal so keyboard users never focus hidden content. Replacing a view disconnects its observer.
 - Sorting and role changes restore focus to the same control after updating the results, without scrolling the page.
 - Dialog: opacity and 12px translation/.985 scale on open, reverse on close. Native discrete display/overlay transitions only retain the visual top layer, not animate layout or delay application state. Mechanism informed by beui center-morph-modal's mirrored entry/exit and opacity-only reduced-motion path.

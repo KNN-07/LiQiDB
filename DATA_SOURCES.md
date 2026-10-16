@@ -2,6 +2,30 @@
 
 ## Provenance
 
+### Local recrawl on October 16, 2026
+
+The current shipped data is a fresh local crawl, not byte-for-byte content from
+the immutable snapshot below. The unchanged upstream crawler at commit
+`c92526a134b434ca3f40936e393deb86f90dffc2` ran its full `npm run data` pipeline
+against Garena and both Fandom APIs in an isolated checkout. All stages succeeded.
+`meta.refresh` records this distinction, the crawler revision, completion time
+and source URLs; `meta.commit` identifies the base/crawler revision, not a new
+upstream data commit. The upstream main branch still had the October 12 snapshot
+when checked.
+
+The recrawl contains 130 heroes (added Evita), 112 items, 88 runes and 9 spells.
+Eight existing hero records changed. Two seasonal spells disappeared from the
+official list: Lá chắn sinh mệnh and Tụ bảo bồn. All existing source lore paragraphs
+are unchanged; Evita has no source lore, so the 79 Vietnamese translations retain
+their existing source revision and exact paragraph coverage.
+
+A fresh crawl does not guarantee that the source CMS reflects the latest game
+balance. For example, Taara's hero page and the February 5, 2026 balance note
+describe different healing numbers. Counter-pick explanations therefore use
+qualitative mechanics, not unsupported current percentages or win rates.
+
+### Original immutable snapshot
+
 The complete records in `public/data/heroes.json`, `items.json`, `runes.json`,
 `spells.json`, and `crawl-info.json` come from MLuc24's
 `https://github.com/MLuc24/lien-quan-data`, branch `main`, pinned to commit
@@ -75,6 +99,21 @@ Normalization strips combining accents and maps Vietnamese `đ`/`Đ` to `d`.
 The class filter accepts Vietnamese or English role names and combines with
 the text query. `roles` maps Assassin, Mage, Support, Warrior, Tank, and
 Marksman from their Vietnamese class labels.
+
+## Counter-pick guide
+
+`public/data/counters.json` is original Vietnamese editorial content, separate
+from the crawled collections. It records review date, directed `counter` and
+`target` hero slugs, a mechanism, limitations, evidence type and per-pair URLs.
+Three pairs have explicit matchup analysis in Sforum's September 6, 2023 article;
+the historical date is visible beside its link. Four are LiQiDB inferences from
+two official Garena ability descriptions, labelled as mechanics analysis.
+Neither type is presented as current meta or a guaranteed outcome.
+
+The browser exports `counterGuide`, `matchups` and `filterMatchups(query)`.
+Search accepts either hero's name/title/class without reversing direction.
+The source URLs and date are shipped with every card; official pages generally
+do not state their last skill-update date.
 
 ## Refresh
 

@@ -1,7 +1,7 @@
 # LiQiDB
 
 Cẩm nang Liên Quân Mobile bằng **tiếng Việt**, gồm tướng, kỹ năng, trang bị,
-ngọc, phép bổ trợ và bảng xếp hạng cá nhân.
+ngọc, phép bổ trợ, cặp khắc chế và bảng xếp hạng cá nhân.
 
 **[Mở cẩm nang LiQiDB](https://knn-07.github.io/LiQiDB/)**
 
@@ -18,15 +18,24 @@ Arena of Valor Fandom và bản dịch tiểu sử được chia sẻ theo giấ
 dữ liệu, nguồn tham khảo và giấy phép. Liên kết kho dữ liệu gốc luôn có ở
 chân trang và phần nguồn của mỗi tướng.
 
+Biểu tượng **Font Awesome Free** thuộc Fonticons, Inc. (CC BY 4.0 cho SVG;
+MIT cho mã thư viện). **Anime.js** của Julian Garnier dùng giấy phép MIT.
+Bản ghi công và giấy phép được xuất bản cùng trang trong
+[`THIRD_PARTY_NOTICES.txt`](public/THIRD_PARTY_NOTICES.txt).
+
 ## Tính năng
 
-- Tra cứu 129 tướng: vai trò, chỉ số, kỹ năng, trang bị gợi ý và tiểu sử.
+- Tra cứu 130 tướng: vai trò, chỉ số, kỹ năng, trang bị gợi ý và tiểu sử.
+- 7 cặp khắc chế có hướng, giải thích cơ chế, điều kiện và liên kết nguồn.
+  Tìm theo tên một trong hai tướng hoặc mở từ thông tin chi tiết.
 - Tìm kiếm không dấu, lọc vai trò và sắp xếp tên theo tiếng Việt.
-- 112 trang bị, 88 ngọc và 11 phép bổ trợ với thông tin chi tiết.
+- 112 trang bị, 88 ngọc và 9 phép bổ trợ với thông tin chi tiết.
 - Tạo bảng xếp hạng S–D, tự động lưu trong trình duyệt, đặt lại và tải tệp JSON.
 - Giao diện sáng, tối hoặc theo hệ thống; dùng được trên điện thoại và máy tính.
 - Hiệu ứng xuất hiện khi chuyển trang, thẻ tướng phản hồi khi rê/bấm và cửa sổ
   chi tiết đóng mở mượt; tự giảm chuyển động theo thiết lập của thiết bị.
+- Biểu tượng Font Awesome Free và hiệu ứng xuất hiện bằng Anime.js được
+  đóng gói cùng trang, không phụ thuộc CDN.
 - Phím `/` để tìm nhanh; phím `Escape` để đóng thông tin chi tiết.
 
 Bảng xếp hạng phản ánh đánh giá cá nhân, **không phải** xếp hạng thi đấu hay
@@ -66,8 +75,14 @@ kết như `/LiQiDB/#tier-list` không cần cấu hình chuyển hướng máy 
 
 ## Cập nhật dữ liệu
 
-`public/data` chứa bản chụp dữ liệu được cố định theo một mã phiên bản của
-kho gốc. Hình ảnh tải từ máy chủ Garena nên cần kết nối mạng.
+`public/data` chứa bản thu thập lại ngày **16/10/2026**, bằng mã crawler gốc
+`c92526a134b434ca3f40936e393deb86f90dffc2`. Bản mới có Evita, cập nhật 8
+tướng và bỏ hai phép theo mùa không còn trong danh sách nguồn. Hình ảnh tải
+từ máy chủ Garena nên cần kết nối mạng. Ngày thu thập không bảo đảm các trang
+nguồn đã cập nhật đủ mọi thay đổi cân bằng trong trò chơi.
+
+Lệnh dưới đây **chỉ nhập bản JSON đã xuất bản của kho gốc**, không chạy crawler.
+Kiểm tra ngày trong bản vá: kho gốc có thể cũ hơn lần thu thập tại LiQiDB.
 
 ```sh
 bun scripts/sync-data.mjs --patch > snapshot.patch
@@ -78,3 +93,10 @@ bun run build
 
 Hãy đọc thay đổi trước khi áp dụng bản vá. Nếu nguồn tiểu sử thay đổi, cần
 cập nhật bản dịch tiếng Việt tương ứng trước khi xuất bản.
+
+Để thu thập mới, dùng bản checkout riêng của kho gốc tại mã crawler nói trên,
+chạy `npm run data`, kiểm tra thay đổi rồi nhập các bộ dữ liệu vào `public/data`.
+Ghi ngày thực tế và nguồn trong `meta.json`; không đổi ngày để giả lập dữ liệu mới.
+Cặp khắc chế là nội dung tuyển chọn riêng trong `counters.json`, không bị ghi đè
+khi thu thập nguồn. Phân tích nguồn cặp đấu năm 2023 được ghi rõ ngày; các cặp
+suy luận từ kỹ năng không được trình bày như kết luận chính thức của Garena.

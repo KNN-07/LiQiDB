@@ -2,23 +2,33 @@
   "source": "https://github.com/MLuc24/lien-quan-data",
   "branch": "main",
   "commit": "c92526a134b434ca3f40936e393deb86f90dffc2",
-  "snapshotDate": "2026-10-12T08:10:03.376Z",
+  "snapshotDate": "2026-10-16T05:43:33.627Z",
   "crawlInfo": {
     "fandom-en": {
-      "crawledAt": "2026-10-12T08:10:03.376Z",
+      "crawledAt": "2026-10-16T05:43:33.627Z",
       "titles": 129,
       "pages": 129
     },
     "fandom-vi": {
-      "crawledAt": "2026-10-12T08:10:02.358Z",
+      "crawledAt": "2026-10-16T05:43:31.050Z",
       "titles": 130,
-      "pages": 121
+      "pages": 122
     }
   },
   "counts": {
-    "heroes": 129,
+    "heroes": 130,
     "items": 112,
     "runes": 88,
-    "spells": 11
+    "spells": 9
+  },
+  "refresh": {
+    "method": "local-upstream-recrawl",
+    "crawlerCommit": "c92526a134b434ca3f40936e393deb86f90dffc2",
+    "completedAt": "2026-10-16T05:44:31.284Z",
+    "sources": [
+      "https://lienquan.garena.vn/hoc-vien/",
+      "https://arenaofvalor.fandom.com/vi/api.php",
+      "https://arenaofvalor.fandom.com/api.php"
+    ]
   }
 }
