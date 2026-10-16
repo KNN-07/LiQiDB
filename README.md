@@ -2,6 +2,18 @@
 
 A responsive Arena of Valor / Lien Quan Mobile reference site built with vanilla JavaScript and Vite.
 
+## Original data and credits
+
+Built on **[MLuc24/lien-quan-data](https://github.com/MLuc24/lien-quan-data)**.
+Thank you to MLuc24 and the upstream contributors for collecting and maintaining
+the open hero, equipment, arcana, and spell data that powers this WebUI.
+LiQiDB is an independent interface, not the original dataset or an official game site.
+
+Game data and artwork belong to Garena / TiMi Studios. Wiki-derived text is
+attributed to Arena of Valor Fandom contributors under CC BY-SA 3.0.
+See [DATA_SOURCES.md](DATA_SOURCES.md) for the pinned revision, individual sources,
+and licensing details. The WebUI also links the original repository in its footer.
+
 ## Publish the WebUI on GitHub Pages
 
 This is a fully static browser app: GitHub Pages serves the built WebUI and
