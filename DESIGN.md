@@ -109,3 +109,25 @@ its scroll-linked opacity before captures; stale blank frames are not references
 - Accessibility: preserve all visible labels, Font Awesome decorative SVGs,
   keyboard focus, readable paragraph case and minimum touch targets. Reference
   design is adapted to LiQiDB's richer navigation, not copied as a flat image.
+
+## 11. Revisioned wiki and matchup detail
+
+The existing source-inspired tokens and native dialog remain the contract.
+Additional encyclopedia content uses sentence-case body text, square neutral
+dividers, 24px section titles and 16/24px gaps. No new motion or palette.
+
+- Wiki details: a named section with source revision/edit/import dates and a
+  permanent community-source warning. Native disclosures separate skills,
+  profile, lore relationships and recommendations; skills open initially.
+  Skill tables become stacked labelled rows on phones rather than document
+  horizontal scrolling. Raw HTML is never inserted from the source.
+- Source differences: the original Garena records stay separate. Wiki edit
+  dates do not imply post-patch correctness; dated official patch context stays
+  visible. Lore relationships are explicitly not gameplay counter-picks.
+- Matchup groups: separate incoming and outgoing directions, real opponent
+  actions, and explicit empty states. An opponent button opens that hero;
+  reasons, conditions and counterplay are available in native disclosures.
+- Score: a compact textual ordinal N/5 badge with a named editorial anchor,
+  scenario and confidence. No percentage, progress bar or count-derived grade.
+  Unresolved causal interactions are unranked and separated from recommendations.
+  Every score exposes its justification and why the next anchor is unsupported.

@@ -100,6 +100,58 @@ The class filter accepts Vietnamese or English role names and combines with
 the text query. `roles` maps Assassin, Mage, Support, Warrior, Tank, and
 Marksman from their Vietnamese class labels.
 
+## Revisioned Vietnamese Fandom detail
+
+`public/data/hero-wiki.json` is a separate October 16, 2026 import from the
+user-requested Vietnamese wiki at:
+
+```text
+https://arenaofvalor.fandom.com/vi/wiki/Wiki_Li%C3%AAn_Qu%C3%A2n_Mobile
+```
+
+The ordinary HTML endpoint returned a Cloudflare challenge. Its public
+`/vi/api.php` query/revisions and parse APIs returned real JSON. The importer
+queries all 130 local hero/form mappings, resolves canonical titles and
+redirects, then requests rendered content at each exact page revision.
+It imports 122 available pages and records eight missing mappings explicitly:
+Lumburr, Ming, Omega, Ormarr, Superman, The Flash, Wonder Woman and Xeniel.
+Wiro resolves to **Wiro Sableng**. The two Flowborn role subpages remain
+different records and page IDs.
+
+The 893 imported sections include skill descriptions/effects, profile facts,
+lore relationships, recommendation explanations and source-supported details.
+No source HTML or scripts are inserted into the UI. Native HTMLRewriter
+extracts text and structured cells; disclosure sections and stacked rows make
+the same information readable on phones. The original Garena records and
+translated lore remain untouched.
+
+Every available record stores its page ID, revision ID, edit/import timestamps,
+original/revision/API URLs, and SHA-256 values for the fetched wikitext and
+rendered HTML. Template expansion is captured at import time; a page revision
+alone does not pin every transcluded template. Revision dates are **not**
+certification that the entire kit matches the newest balance patch. For
+example, Airi revision 6511 describes a redesigned passive and Long-Ấn kit
+that differs materially from the undated Garena CMS. Source versions are
+shown separately instead of silently combining their coefficients.
+
+The wiki's siteinfo rights metadata reports **CC-BY-SA**, linking to
+`https://www.fandom.com/licensing`. The new section credits the wiki community
+and links both the article and inspected revision. Existing translated lore
+retains its separately recorded CC BY-SA 3.0 attribution.
+
+Reproduce the import without overwriting the original collections:
+
+```sh
+bun scripts/sync-fandom.mjs --patch > fandom.patch
+apply_patch < fandom.patch
+bun test
+bun run build
+```
+
+Review the source/version changes before publication. The importer emits a
+patch, not direct file writes; missing pages are not replaced with unrelated
+heroes, international-kit assumptions or generated content.
+
 ## Counter-pick guide
 
 `public/data/counters.json` is original Vietnamese editorial content, separate

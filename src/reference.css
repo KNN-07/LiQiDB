@@ -66,6 +66,24 @@ h1{font-weight:300;letter-spacing:.08em;text-transform:uppercase}
 .catalog-source{display:grid;max-width:480px;gap:8px;margin-bottom:24px}
 .catalog-source>span{font-size:13px;color:var(--muted)}
 .catalog-source select{width:100%;min-width:0}
+.wiki-details{min-width:0}
+.wiki-details>h2{padding-right:48px}
+.wiki-provenance{font-size:13px!important;color:var(--muted);line-height:1.8}
+.wiki-source-links{display:flex;flex-wrap:wrap;gap:8px 24px}
+.wiki-details a{color:var(--accent);text-decoration:underline;text-underline-offset:4px}
+.wiki-source-links a{display:inline-flex;align-items:center;gap:8px;min-height:44px}
+.source-disclosure{border-top:1px solid var(--line);margin-top:16px;padding-top:8px}
+.source-disclosure>summary{min-height:48px;cursor:pointer;color:var(--ink);font-weight:500;padding-block:8px}
+.source-disclosure[open]>summary{margin-bottom:16px}
+.source-disclosure>p,.source-disclosure>ul{margin-block:12px}
+.wiki-text{white-space:pre-line;overflow-wrap:anywhere}
+.wiki-list{padding-left:20px;font-size:15px;color:var(--muted);line-height:1.8}
+.wiki-table-row{padding:20px 0;border-bottom:1px solid var(--line)}
+.wiki-table-row:first-child{padding-top:0}
+.wiki-table-row h4{font:500 16px/1.6 var(--body);margin:0 0 12px;color:var(--ink)}
+.wiki-table-row dl{margin:0}
+.wiki-table-row dt{font-size:12px;color:var(--muted);margin-top:12px}
+.wiki-table-row dd{margin:4px 0 0;font-size:15px;color:var(--ink);line-height:1.8}
 footer{padding-inline:16px}
 footer p a{text-decoration:underline;text-underline-offset:3px}
 @media(max-width:1200px) and (min-width:761px){

@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, test } from 'bun:test';
 import { readFile } from 'node:fs/promises';
 
-const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi', 'counters', 'season-meta', 'reference-builds'];
+const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki'];
 const snapshots = Object.fromEntries(await Promise.all(names.map(async (name) => [
   name,
   JSON.parse(await readFile(new URL(`../public/data/${name}.json`, import.meta.url), 'utf8')),
@@ -32,7 +32,7 @@ afterAll(() => server.stop(true));
 describe('pinned data integrity', () => {
   test('loads every collection without dropping record fields', () => {
     expect(requested.sort()).toEqual(
-      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds'].map((name) => `./data/${name}.json`).sort(),
+      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki'].map((name) => `./data/${name}.json`).sort(),
     );
     for (const name of ['heroes', 'items', 'runes', 'spells']) {
       expect(data[name]).toEqual(snapshots[name]);
@@ -133,6 +133,49 @@ describe('curated counter-pick guide', () => {
         expect(evidence.interaction.trim().length).toBeGreaterThan(0);
       }
     }
+  });
+});
+
+describe('revisioned Vietnamese wiki details', () => {
+  test('accounts for every local hero form without inventing missing pages', () => {
+    expect(data.heroWiki).toEqual(snapshots['hero-wiki']);
+    expect(data.heroWiki.locale).toBe('vi');
+    expect(data.heroWiki.records.map(record => record.slug).sort()).toEqual(
+      data.heroes.map(hero => hero.slug).sort(),
+    );
+    const available = data.heroWiki.records.filter(record => record.status === 'available');
+    expect(available.length).toBeGreaterThan(0);
+    for (const record of data.heroWiki.records) {
+      expect(['available', 'missing', 'empty']).toContain(record.status);
+      if (record.status === 'missing') {
+        expect(record.sections).toEqual([]);
+        expect(record.source).toBeUndefined();
+        continue;
+      }
+      expect(record.source.revisionId).toBeGreaterThan(0);
+      expect(record.source.pageId).toBeGreaterThan(0);
+      expect(new URL(record.source.url).hostname).toBe('arenaofvalor.fandom.com');
+      expect(new URL(record.source.revisionUrl).searchParams.get('oldid')).toBe(String(record.source.revisionId));
+      expect(Number.isFinite(Date.parse(record.source.editedAt))).toBe(true);
+      expect(record.source.textSha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(record.source.renderedSha256).toMatch(/^[a-f0-9]{64}$/);
+      for (const section of record.sections) {
+        expect(section.anchor.length).toBeGreaterThan(0);
+        for (const block of section.blocks) {
+          expect(['paragraph', 'bullet', 'table']).toContain(block.kind);
+          if (block.kind === 'table') {
+            expect(block.rows.length).toBeGreaterThan(0);
+            for (const row of block.rows) for (const cell of row) {
+              expect(typeof cell.text).toBe('string');
+              expect(typeof cell.header).toBe('boolean');
+            }
+          } else expect(block.text.trim().length).toBeGreaterThan(0);
+        }
+      }
+    }
+    const forms = ['flowborn', 'flowborn-2'].map(slug => data.heroWiki.records.find(record => record.slug === slug));
+    expect(forms.every(record => record.status === 'available')).toBe(true);
+    expect(forms[0].source.pageId).not.toBe(forms[1].source.pageId);
   });
 });
 

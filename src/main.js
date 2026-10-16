@@ -3,6 +3,7 @@ import './reference.css';
 import { glyph } from './icons.js';
 import { createViewMotion } from './motion.js';
 import { renderSeason, renderHeroSeason } from './season.js';
+import { renderHeroWiki } from './wiki.js';
 
 const main = document.querySelector('main');
 const dialog = document.querySelector('#detail');
@@ -129,6 +130,7 @@ function openHero(slug) {
   matchups.className = 'detail-section hero-matchups';
   matchups.innerHTML = `<h2>${glyph('counter')} Cặp khắc chế</h2><p>${pairs.length ? `${pairs.length} cặp có phân tích cho ${escape(hero.name)} trong cẩm nang.` : 'Cẩm nang chưa có phân tích cặp đấu cho tướng này.'}</p><a class="button secondary" href="#counters${pairs.length ? `/${escape(slug)}` : ''}">${pairs.length ? 'Xem cặp đối đầu liên quan' : 'Khám phá các cặp đã có'} ${glyph('arrow')}</a>`;
   dialog.querySelector('.detail-body').prepend(matchups);
+  matchups.insertAdjacentHTML('afterend', renderHeroWiki(data, slug));
   const seasonContext = document.createElement('div');
   seasonContext.className = 'hero-season-context';
   seasonContext.innerHTML = renderHeroSeason(data, slug);

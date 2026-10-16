@@ -4,8 +4,8 @@ async function load(name) {
   return response.json();
 }
 
-export const [heroes, items, runes, spells, meta, loreTranslation, counterGuide, seasonMeta, referenceBuilds] = await Promise.all(
-  ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds'].map(load),
+export const [heroes, items, runes, spells, meta, loreTranslation, counterGuide, seasonMeta, referenceBuilds, heroWiki] = await Promise.all(
+  ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki'].map(load),
 );
 export const loreVi = loreTranslation.heroes;
 export const matchups = counterGuide.pairs;

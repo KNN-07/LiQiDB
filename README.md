@@ -32,6 +32,9 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
 ## Tính năng
 
 - Tra cứu 130 tướng: vai trò, chỉ số, kỹ năng, trang bị gợi ý và tiểu sử.
+- Thông tin wiki tiếng Việt theo phiên bản trang: 122 trang cho 130 tướng /
+  dạng, gồm kỹ năng chi tiết, hồ sơ, quan hệ cốt truyện và giải thích lối lên đồ.
+  Tám tướng chưa có trang phù hợp được ghi rõ; không tự ghép thông tin.
 - Meta **S4 2026 — Vết Nứt Thời Không**: 146 bản ghi theo đường cho 129
   tướng / dạng, giữ nguyên tier và điểm tổng hợp từ mẫu TierLQ ngày 11/10/2026.
 - 132 cặp khắc chế có hướng, bao phủ đủ 130 tướng / dạng, giải thích cơ chế,
