@@ -25,6 +25,8 @@ chân trang và phần nguồn của mỗi tướng.
 - 112 trang bị, 88 ngọc và 11 phép bổ trợ với thông tin chi tiết.
 - Tạo bảng xếp hạng S–D, tự động lưu trong trình duyệt, đặt lại và tải tệp JSON.
 - Giao diện sáng, tối hoặc theo hệ thống; dùng được trên điện thoại và máy tính.
+- Hiệu ứng xuất hiện khi chuyển trang, thẻ tướng phản hồi khi rê/bấm và cửa sổ
+  chi tiết đóng mở mượt; tự giảm chuyển động theo thiết lập của thiết bị.
 - Phím `/` để tìm nhanh; phím `Escape` để đóng thông tin chi tiết.
 
 Bảng xếp hạng phản ánh đánh giá cá nhân, **không phải** xếp hạng thi đấu hay

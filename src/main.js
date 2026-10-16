@@ -12,6 +12,8 @@ const readStored = (key, fallback) => { try { return JSON.parse(localStorage.get
 let data, query = '', selectedRole = 'All', sort = 'name';
 let rankings = readStored('liqidb-tiers', {});
 const tiers = ['S', 'A', 'B', 'C', 'D'];
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+let revealObserver;
 const theme = document.querySelector('#theme');
 theme.value = localStorage.getItem('liqidb-theme') || 'system';
 function setTheme() {
@@ -21,6 +23,42 @@ function setTheme() {
 theme.addEventListener('change', setTheme);
 setTheme();
 const view = () => ['heroes','tier-list','items','runes','spells'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'heroes';
+
+function animateView() {
+  const tokens = getComputedStyle(document.documentElement);
+  const easing = tokens.getPropertyValue('--motion-ease').trim();
+  const duration = parseFloat(tokens.getPropertyValue('--motion-enter'));
+  const reveal = (element, delay = 0) => {
+    const reduced = motionPreference.matches;
+    const frames = reduced
+      ? [{ opacity: .45 }, { opacity: 1 }]
+      : [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'translateY(0)' }];
+    const animation = element.animate(frames, {
+      duration: reduced ? 100 : duration,
+      delay: reduced ? 0 : delay,
+      easing,
+      fill: 'backwards',
+    });
+    animation.id = 'liqidb-entry';
+  };
+  main.querySelectorAll('.page-intro, .feature, .tier-notice').forEach((element, index) => reveal(element, index * 32));
+  const observer = new IntersectionObserver(entries => {
+    entries.filter(entry => entry.isIntersecting).forEach((entry, index) => {
+      reveal(entry.target, (index % 6) * 32);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: .08 });
+  main.querySelectorAll('.hero-card, .record-card').forEach(element => observer.observe(element));
+  revealObserver = observer;
+}
+
+motionPreference.addEventListener('change', () => {
+  document.getAnimations().filter(animation => animation.id === 'liqidb-entry').forEach(animation => animation.cancel());
+});
+main.addEventListener('focusin', event => {
+  event.target.closest('.hero-card, .record-card')?.getAnimations()
+    .filter(animation => animation.id === 'liqidb-entry').forEach(animation => animation.cancel());
+});
 
 function header(title, subtitle, eyebrow = 'CẨM NANG LIÊN QUÂN MOBILE') {
   return `<section class="page-intro"><div><p class="eyebrow">${eyebrow}</p><h1>${title}</h1><p class="intro-copy">${subtitle}</p></div><span class="source-badge"><span class="status-dot"></span> Dữ liệu mở từ cộng đồng</span></section>`;
@@ -41,7 +79,7 @@ function renderHeroes() {
   const list = filtered(data.heroes);
   const feature = data.heroes.find(h => h.slug === 'airi') || data.heroes[0];
   main.innerHTML = `<div class="content">${header('Hiểu tướng. Chọn lối chơi.', 'Tra cứu kỹ năng, trang bị và tìm vị tướng phù hợp với bạn.')}
-  <section class="feature"><img class="feature-art" src="${escape(art(feature))}" alt="Hình ảnh chính thức của ${escape(feature.name)}" width="1200" height="500" fetchpriority="high"><div class="feature-scrim"></div><div class="feature-copy"><p class="eyebrow">KHÁM PHÁ TƯỚNG</p><h2>Nắm rõ kỹ năng.<br>Tự tin giao tranh.</h2><p>Tìm lối chơi của bạn, hiểu từng chiêu thức.<br>Sẵn sàng cho trận đấu tiếp theo.</p><button class="button" data-hero="${feature.slug}">Khám phá ${escape(feature.name)} <span>&nearr;</span></button></div><span class="feature-caption">${escape(feature.name)}<small>${escape(feature.title)}</small></span></section>
+  <section class="feature"><img class="feature-art" src="${escape(art(feature))}" alt="Hình ảnh chính thức của ${escape(feature.name)}" width="1200" height="500" fetchpriority="high"><div class="feature-scrim"></div><div class="feature-copy"><p class="eyebrow">KHÁM PHÁ TƯỚNG</p><h2>Nắm rõ kỹ năng.<br>Tự tin giao tranh.</h2><p>Tìm lối chơi của bạn, hiểu từng chiêu thức.<br>Sẵn sàng cho trận đấu tiếp theo.</p><button class="button" data-hero="${feature.slug}">Khám phá ${escape(feature.name)} <span>&nearr;</span></button></div><div class="feature-catalog"><a href="#items"><strong>${data.items.length}</strong><span>trang bị</span></a><a href="#runes"><strong>${data.runes.length}</strong><span>ngọc</span></a><a href="#spells"><strong>${data.spells.length}</strong><span>phép bổ trợ</span></a></div><span class="feature-caption">${escape(feature.name)}<small>${escape(feature.title)}</small></span></section>
   <section class="roster"><div class="section-heading"><h2>Danh sách tướng <span>${data.heroes.length}</span></h2><a href="#tier-list">Tạo bảng xếp hạng &rarr;</a></div>
   <div class="role-filters" role="group" aria-label="Lọc tướng theo vai trò">${['All','Đấu sĩ','Sát thủ','Pháp sư','Xạ thủ','Đỡ đòn','Trợ thủ'].map((r,i)=>`<button data-role="${r}" aria-pressed="${selectedRole === r}" class="${selectedRole === r ? 'selected' : ''}"><span class="role-glyph" aria-hidden="true">${['&#10022;','&#9876;','&#9672;','&#10023;','&#10164;','&#11041;','&#10010;'][i]}</span>${r === 'All' ? 'Tất cả tướng' : r}</button>`).join('')}</div>
   ${toolbar('tướng', list.length)}<div id="results">${list.length ? `<div class="hero-grid">${list.map(heroCard).join('')}</div>` : empty()}</div></section>
@@ -67,11 +105,12 @@ function renderTiers() {
   const rankedCount = data.heroes.filter(h => tiers.includes(rankings[h.slug])).length;
   main.innerHTML = `<div class="content">${header('Xếp hạng theo cách bạn chơi.', 'Tạo bảng xếp hạng tướng theo trải nghiệm của riêng bạn.', 'BẢNG XẾP HẠNG CÁ NHÂN')}
   <div class="tier-notice"><span class="note-mark" aria-hidden="true">i</span><p><strong>Đây là đánh giá cá nhân, không phải xếp hạng thi đấu.</strong> Nguồn dữ liệu không có bậc sức mạnh hay tỷ lệ thắng. Lựa chọn của bạn được tự động lưu trong trình duyệt này.</p></div>
-  <div class="section-heading"><h2>Bảng của tôi <span>${rankedCount} tướng đã xếp</span></h2><div class="cluster"><button class="button secondary" id="export">Tải tệp JSON &darr;</button><button class="button secondary" id="reset-tiers">Đặt lại bảng</button></div></div>
+  <div class="section-heading"><h2>Bảng của tôi <span>${rankedCount} tướng đã xếp</span></h2><div class="cluster"><button class="button secondary" id="export">Tải tệp JSON &darr;</button><button class="button secondary" id="reset-tiers"${rankedCount ? '' : ' disabled'}>Đặt lại bảng</button></div></div>
   <section class="tier-board" aria-label="Bảng xếp hạng cá nhân">${tiers.map(t => `<div class="tier-row"><h2>${t}<small>BẬC</small></h2><div class="tier-members">${data.heroes.filter(h => rankings[h.slug] === t).map(tierHero).join('') || `<p class="tier-empty">Chọn bậc ${t} trong danh sách bên dưới mỗi tướng.</p>`}</div></div>`).join('')}</section>
   <div class="section-heading pool-heading"><h2>Tướng chưa xếp hạng <span>${data.heroes.length-rankedCount}</span></h2></div>${toolbar('tướng',pool.length)}<section class="tier-pool">${pool.map(tierHero).join('') || '<p class="tier-empty">Không có tướng chưa xếp hạng phù hợp với tìm kiếm.</p>'}</section><p id="save-status" class="data-caption" role="status">Đã lưu trong trình duyệt. Tải tệp JSON để giữ một bản sao.</p></div>`;
 }
-function render() {
+function render(animate = false) {
+  revealObserver?.disconnect();
   const current = view();
   for (const link of document.querySelectorAll('[data-view]')) {
     link.classList.toggle('active', link.dataset.view === current);
@@ -79,6 +118,7 @@ function render() {
   }
   document.title = `${current === 'heroes' ? 'Tướng' : current === 'tier-list' ? 'Bảng xếp hạng cá nhân' : collectionNames[current][0]} - LiQiDB`;
   if (current === 'heroes') renderHeroes(); else if (current === 'tier-list') renderTiers(); else renderCollection(current);
+  if (animate) animateView();
 }
 function detailSources(sources = {}) {
   return `<section class="detail-section sources"><h2>Nguồn dữ liệu và ghi công</h2><p>Dữ liệu và hình ảnh thuộc Garena / TiMi Studios. Nội dung từ cộng đồng Arena of Valor Fandom và bản dịch tiểu sử được chia sẻ theo giấy phép <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noreferrer">CC BY-SA 3.0</a>.</p><div class="cluster">${Object.entries(sources).filter(([,url])=> typeof url === 'string' && /^https?:\/\//.test(url)).map(([label,url])=>`<a href="${escape(url)}" target="_blank" rel="noreferrer">${escape({garena:'Garena',fandomVi:'Wiki tiếng Việt',fandomEn:'Wiki quốc tế'}[label] || 'Nguồn tham khảo')} &nearr;</a>`).join('')}<a href="https://github.com/MLuc24/lien-quan-data" target="_blank" rel="noreferrer">Dữ liệu gốc từ MLuc24 &nearr;</a></div></section>`;
@@ -97,14 +137,17 @@ function humanize(key) {
 }
 function renderValue(value) {
   if (typeof value === 'boolean') return value ? 'Có' : 'Không';
+  if (typeof value === 'number') return escape(value.toLocaleString('vi-VN'));
   if (Array.isArray(value)) return `<ul>${value.map(v=>`<li>${renderValue(v)}</li>`).join('')}</ul>`;
   if (value && typeof value === 'object') return `<dl>${Object.entries(value).map(([k,v])=>`<dt>${escape(humanize(k))}</dt><dd>${renderValue(v)}</dd>`).join('')}</dl>`;
   const translated = {Melee:'Cận chiến',Meele:'Cận chiến',Ranged:'Đánh xa',Range:'Đánh xa','Long Range':'Tầm xa',Near:'Tầm gần',Medium:'Tầm trung','Skill 2':'Chiêu 2','Ranged / Melee':'Đánh xa / Cận chiến','0 / 0% - inf/inf% (When trigger passive)':'0 / 0% – ∞ / ∞% (khi kích hoạt nội tại)'}[value];
+  if (/^\d+(?:\.\d+)?$/.test(value)) return escape(Number(value).toLocaleString('vi-VN', { maximumFractionDigits: 20 }));
   return escape(translated ?? value);
 }
 function openRecord(index) {
   const r = data[view()][index];
-  dialog.innerHTML = `<button class="close-dialog" aria-label="Đóng thông tin chi tiết">&times;</button><div class="detail-body record-detail"><p class="eyebrow">CẨM NANG ${collectionNames[view()][0].toLocaleUpperCase('vi-VN')}</p><h1 id="detail-title">${escape(r.name)}</h1>${image(r.icon||r.image,r.name,'record-icon',true)}${Object.entries(r).filter(([k])=> !['name','slug','icon','image','sources','searchKey','portrait'].includes(k)).map(([k,v])=>`<section class="detail-section"><h2>${escape(humanize(k))}</h2><div>${renderValue(v)}</div></section>`).join('')}${detailSources(r.sources)}</div>`;
+  const factFields = ['group', 'tier', 'gold', 'color', 'seasonal', 'rawName'];
+  dialog.innerHTML = `<button class="close-dialog" aria-label="Đóng thông tin chi tiết">&times;</button><div class="detail-body record-detail"><div class="record-heading">${image(r.icon||r.image,r.name,'record-icon',true)}<div><p class="eyebrow">CẨM NANG ${collectionNames[view()][0].toLocaleUpperCase('vi-VN')}</p><h1 id="detail-title">${escape(r.name)}</h1></div></div><div class="record-facts">${Object.entries(r).filter(([k])=>factFields.includes(k)).map(([k,v])=>`<div><span>${escape(humanize(k))}</span><strong>${renderValue(v)}</strong></div>`).join('')}</div>${Object.entries(r).filter(([k])=> !['name','slug','icon','image','sources','searchKey','portrait',...factFields].includes(k)).map(([k,v])=>`<section class="detail-section"><h2>${escape(humanize(k))}</h2><div>${renderValue(v)}</div></section>`).join('')}${detailSources(r.sources)}</div>`;
   dialog.showModal();
   dialog.scrollTop = 0;
 }
@@ -114,11 +157,11 @@ main.addEventListener('click',event=>{
   const record = event.target.closest('[data-record]');
   if(record) return openRecord(Number(record.dataset.record));
   const filter = event.target.closest('[data-role]');
-  if(filter) { selectedRole=filter.dataset.role; render(); }
+  if(filter) { selectedRole=filter.dataset.role; render(); document.querySelector(`[data-role="${CSS.escape(selectedRole)}"]`).focus({preventScroll:true}); }
   if(event.target.closest('[data-clear]')) { query='';selectedRole='All';render();document.querySelector('#search').focus(); }
   if(event.target.closest('#reset-tiers')) {
     if(!Object.keys(rankings).length) return;
-    dialog.innerHTML='<div class="detail-body"><h1 id="detail-title">Đặt lại bảng xếp hạng?</h1><p>Thao tác này xóa các bậc đã lưu trong trình duyệt. Hãy tải tệp JSON trước nếu bạn muốn giữ một bản sao.</p><div class="cluster"><button class="button secondary close-dialog-inline">Giữ nguyên</button><button class="button" id="confirm-reset">Xóa xếp hạng</button></div></div>';
+    dialog.innerHTML='<div class="detail-body"><h1 id="detail-title">Đặt lại bảng xếp hạng?</h1><p>Thao tác này xóa các bậc đã lưu trong trình duyệt. Hãy tải tệp JSON trước nếu bạn muốn giữ một bản sao.</p><div class="cluster"><button class="button secondary close-dialog-inline">Giữ nguyên</button><button class="button destructive" id="confirm-reset">Xóa xếp hạng</button></div></div>';
     dialog.showModal();
   }
   if(event.target.closest('#export')) {
@@ -131,7 +174,7 @@ main.addEventListener('input',event=>{
   const position=event.target.selectionStart;query=event.target.value;render();const input=document.querySelector('#search');input.focus();input.setSelectionRange(position,position);
 });
 main.addEventListener('change',event=>{
-  if(event.target.id==='sort') { sort=event.target.value;render(); }
+  if(event.target.id==='sort') { sort=event.target.value;render();document.querySelector('#sort').focus({preventScroll:true}); }
   if(event.target.dataset.rank) {
     const slug=event.target.dataset.rank;
     if(event.target.value) rankings[slug]=event.target.value; else delete rankings[slug];
@@ -143,7 +186,7 @@ dialog.addEventListener('click',event=>{
   if(event.target.closest('.close-dialog, .close-dialog-inline') || event.target === dialog) dialog.close();
   if(event.target.closest('#confirm-reset')) {rankings={};localStorage.removeItem('liqidb-tiers');dialog.close();render();}
 });
-window.addEventListener('hashchange',()=>{query='';selectedRole='All';dialog.close();render();window.scrollTo(0,0);});
+window.addEventListener('hashchange',()=>{query='';selectedRole='All';dialog.close();render(true);window.scrollTo(0,0);});
 document.addEventListener('keydown',event=>{
   if(event.key==='/' && !dialog.open && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) {event.preventDefault();document.querySelector('#search')?.focus();}
 });
@@ -152,7 +195,7 @@ document.addEventListener('error',event=>{
 },true);
 try {
   data = await import('./data.js');
-  render();
+  render(true);
 } catch(error) {
   main.innerHTML='<section class="empty"><h1>Chưa tải được cẩm nang</h1><p>Không thể đọc dữ liệu của trang. Hãy tải lại để thử lần nữa.</p><button class="button" id="retry">Tải lại dữ liệu</button></section>';
   document.querySelector('#retry').onclick=()=>location.reload();
