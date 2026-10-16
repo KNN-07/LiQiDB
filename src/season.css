@@ -1,0 +1,222 @@
+.season-page,.season-hero-detail{font-family:"Be Vietnam Pro",Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;min-width:0}
+.season-page{--season-gold:#d9b56c;--tier-S:#d9b56c;--tier-A:#b9a9ff;--tier-B:#86d0c3;--tier-C:#8ea3cc;--tier-D:#7a797f;--season-toolbar-top:0px}
+.season-hero-detail{--tier-S:#d9b56c;--tier-A:#b9a9ff;--tier-B:#86d0c3;--tier-C:#8ea3cc;--tier-D:#7a797f}
+:root[data-theme=light] :is(.season-page,.season-hero-detail){--tier-S:#85611a;--tier-A:#6a52d6;--tier-B:#1d7f72;--tier-C:#3e5e9e;--tier-D:#6f6e74}
+@media(prefers-color-scheme:light){:root[data-theme=system] :is(.season-page,.season-hero-detail){--tier-S:#85611a;--tier-A:#6a52d6;--tier-B:#1d7f72;--tier-C:#3e5e9e;--tier-D:#6f6e74}}
+.season-page *,.season-hero-detail *{box-sizing:border-box}
+.season-page svg,.season-hero-detail svg{width:1em;height:1em;flex-shrink:0;vertical-align:-.12em}
+.season-page button,.season-hero-detail button{font:inherit}
+.season-page :is(a,button,input,select):focus-visible,.season-hero-detail :is(a,button,select):focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.season-page :is(button,a),.season-hero-detail :is(button,a){scroll-margin-block:160px}
+.season-content{max-width:1432px;margin-inline:auto;padding:0 56px}
+.season-kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.season-intro{position:relative;isolation:isolate;background:#000;color:#f3f2ef;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.12)}
+.season-cosmos{position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 48% 44%,rgba(97,68,143,.24),transparent 48%),radial-gradient(ellipse at 17% 56%,rgba(49,78,108,.2),transparent 42%),radial-gradient(ellipse at 82% 33%,rgba(137,105,56,.14),transparent 40%),linear-gradient(180deg,#000,#0c0c0e 64%,#000)}
+.season-cosmos::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(217,181,108,.55) .8px,transparent 1px),radial-gradient(circle,rgba(243,242,239,.25) .6px,transparent 1px);background-size:137px 149px,89px 97px;background-position:24px 52px,64px 12px;mask-image:linear-gradient(transparent,#000 30%,#000 60%,transparent);opacity:.45}
+.season-intro-inner{max-width:1320px;margin:auto;text-align:center;padding:100px 32px 72px}
+.season-intro .season-kicker{color:var(--season-gold)}
+.season-intro h1{font:300 clamp(32px,6.22vw,96px)/1.25 "Lexend Exa",Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;margin:32px 0 24px;text-wrap:balance;color:#f3f2ef}
+.season-intro h1 span{display:block;font-size:.34em;color:var(--season-gold);letter-spacing:.32em;margin-top:16px}
+.season-intro-description{max-width:64ch;margin:auto;color:#a9a8ae;font-size:15px}
+.season-dates{font-size:12px;color:#a9a8ae;margin:24px 0}
+.season-dates strong{font-weight:500;color:#f3f2ef}
+.season-dates>span{padding-inline:12px}
+.season-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.season-intro .season-actions{justify-content:center}
+.season-button{display:inline-flex;justify-content:center;align-items:center;gap:16px;min-height:48px;border:1px solid var(--accent);padding:12px 24px;background:var(--accent);color:var(--accent-ink);font-size:13px;font-weight:500;border-radius:0;transition:background 400ms cubic-bezier(.22,.8,.18,1),opacity 160ms}
+.season-intro .season-button,.season-spotlight .season-button{color:#f3f2ef;border-color:rgba(255,255,255,.4);background:rgba(0,0,0,.25)}
+.season-intro .season-button:hover,.season-spotlight .season-button:hover{background:rgba(217,181,108,.12)}
+.season-intro .season-button-quiet{border-color:rgba(255,255,255,.12)}
+.season-snapshot-note{font-size:12px;color:#a9a8ae;margin:24px auto 0;max-width:65ch}
+.season-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1320px;margin:0 auto;border-top:1px solid rgba(255,255,255,.12)}
+.season-stats>div{padding:24px;border-right:1px solid rgba(255,255,255,.12);text-align:center}
+.season-stats>div:last-child{border-right:0}
+.season-stats dt{font-size:12px;color:#a9a8ae;letter-spacing:.04em}
+.season-stats dd{font:300 32px/1.5 "Lexend Exa",Arial,sans-serif;margin:8px 0 0;font-variant-numeric:tabular-nums}
+.season-spotlight{position:relative;isolation:isolate;min-height:600px;margin-top:80px;color:#f3f2ef;background:#0c0c0e;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.season-spotlight-art,.season-spotlight-scrim{position:absolute;inset:0;width:100%;height:100%;z-index:-2;object-fit:cover;object-position:65% 30%}
+.season-spotlight-scrim{z-index:-1;background:linear-gradient(90deg,rgba(0,0,0,.92),rgba(0,0,0,.45) 48%,rgba(0,0,0,.08)),linear-gradient(0deg,#000,transparent 60%)}
+.season-spotlight-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 32px;border-bottom:1px solid rgba(255,255,255,.12)}
+.season-spotlight .season-kicker{color:#d9b56c}
+.season-spotlight-top>span{font-size:12px;color:#a9a8ae}
+.season-spotlight-copy{padding:48px 48px 40px;max-width:760px}
+.season-spotlight h2{font:300 clamp(32px,4vw,64px)/1.25 "Lexend Exa",Arial,sans-serif;text-transform:uppercase;letter-spacing:.04em;margin:16px 0}
+.season-spotlight-copy>p:not(.season-kicker){color:#c7c5ce}
+.season-spotlight-score{display:flex;align-items:center;gap:16px;margin:24px 0}
+.season-tier-letter{display:inline-grid;place-items:center;min-width:56px;min-height:56px;border:1px solid currentColor;font:400 32px "Lexend Exa",Arial,sans-serif}
+:is(.season-page,.season-hero-detail) [data-tier=S]{color:var(--tier-S)}
+:is(.season-page,.season-hero-detail) [data-tier=A]{color:var(--tier-A)}
+:is(.season-page,.season-hero-detail) [data-tier=B]{color:var(--tier-B)}
+:is(.season-page,.season-hero-detail) [data-tier=C]{color:var(--tier-C)}
+:is(.season-page,.season-hero-detail) [data-tier=D]{color:var(--tier-D)}
+.season-spotlight [data-tier]{color:#d9b56c}
+.season-spotlight-score strong{font:300 32px "Lexend Exa",Arial,sans-serif;font-variant-numeric:tabular-nums}
+.season-spotlight-score small{font:15px "Be Vietnam Pro",Arial,sans-serif;color:#a9a8ae}
+.season-spotlight-score div>span{display:block;font-size:12px;color:#a9a8ae;margin-top:4px}
+.season-text-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;background:transparent;color:var(--accent);font-size:13px;padding:4px 0;text-align:left}
+.season-spotlight .season-text-link{color:#f3f2ef}
+.season-spotlight-lanes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.12)}
+.season-spotlight-lanes button{display:flex;justify-content:center;align-items:center;gap:12px;background:rgba(0,0,0,.5);color:#a9a8ae;min-height:64px;border-right:1px solid rgba(255,255,255,.12);font-size:13px}
+.season-spotlight-lanes button[aria-pressed=true]{color:#d9b56c;background:rgba(217,181,108,.12)}
+.season-spotlight-lanes button[aria-pressed=true],.season-lane-selectors button[aria-pressed=true]{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+.season-board-section,.season-provenance{padding-top:80px;scroll-margin-top:120px}
+.season-section-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:16px}
+.season-section-heading h2{font:400 32px/1.4 "Lexend Exa",Arial,sans-serif;letter-spacing:-.04em;margin:12px 0 0}
+.season-board-description{max-width:72ch;margin-bottom:32px}
+.season-toolbar{display:grid;grid-template-columns:minmax(160px,1.4fr) minmax(140px,1fr) minmax(180px,1fr) auto;gap:16px;align-items:end;padding:24px 0;border-top:1px solid var(--line);background:var(--bg)}
+.season-toolbar label,.season-build-heading label{min-width:0;display:block}
+.season-toolbar label>span:first-child,.season-build-heading label>span{display:block;color:var(--muted);font-size:12px;margin-bottom:8px}
+.season-toolbar select,.season-toolbar input,.season-build-heading select{width:100%;max-width:100%;min-height:48px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:0;padding:0 12px;font:13px "Be Vietnam Pro",Arial,sans-serif}
+.season-search-field{display:flex;align-items:center;gap:8px;padding-left:12px;border:1px solid var(--line);background:var(--panel)}
+.season-search-field input{border:0;min-width:0;background:transparent}
+.season-search-field svg{color:var(--muted)}
+.season-reset{min-height:48px;background:var(--raised);color:var(--ink);padding:8px 16px;border:1px solid var(--line)!important;font-size:13px!important}
+.season-lane-selectors{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line)}
+.season-lane-selectors button{min-height:52px;display:flex;justify-content:center;align-items:center;gap:8px;background:var(--panel);border-right:1px solid var(--line);font-size:13px}
+.season-lane-selectors button:last-child{border-right:0}
+.season-lane-selectors button[aria-pressed=true]{color:var(--accent);background:var(--raised)}
+.season-board-meta{display:flex;justify-content:space-between;gap:16px;padding:16px 0;font-size:12px}
+.season-mobile-context{display:none}
+.season-matrix{border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.season-matrix-header,.season-matrix-row{display:grid;grid-template-columns:72px repeat(5,minmax(0,1fr))}
+.season-matrix-single :is(.season-matrix-header,.season-matrix-row){grid-template-columns:72px minmax(0,1fr)}
+.season-lane-cell,.season-rank,.season-rank-heading{border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.season-matrix-header{background:var(--raised)}
+.season-matrix-header h3{font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 4px;margin:0}
+.season-rank-heading{display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.season-rank{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;padding:16px 4px;background:var(--panel)}
+.season-rank strong{font:400 32px "Lexend Exa",Arial,sans-serif}
+.season-rank>span{font-size:10px;text-align:center;color:var(--muted)}
+.season-tier-cell{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:16px 8px;padding:16px 8px}
+.season-matrix-single .season-tier-cell{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.season-tile{display:block;width:100%;min-width:0;background:transparent;padding:0;text-align:left;color:var(--ink);align-self:start}
+.season-tile-art{display:block;position:relative;aspect-ratio:1;overflow:hidden;background:var(--raised);border:1px solid var(--line)}
+.season-tile img{display:block;width:100%;height:100%;object-fit:cover;transition:transform 400ms cubic-bezier(.22,.8,.18,1)}
+.season-tile:hover img{transform:scale(1.04)}
+.season-tile:hover .season-tile-name{color:var(--accent)}
+.season-tile-name{display:block;font-size:12px;font-weight:500;line-height:1.5;margin-top:8px;overflow-wrap:anywhere}
+.season-tile-score{display:block;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.season-tile-score>span{opacity:.8}
+.season-tile-markers{position:absolute;bottom:0;left:0;right:0;display:flex;flex-wrap:wrap;gap:1px}
+.season-marker{display:inline-block;font-size:9px;font-weight:600;line-height:1.5;padding:2px 4px;color:#f3f2ef;background:rgba(0,0,0,.85)}
+.season-no-entry{grid-column:1/-1;color:var(--muted);font-size:11px;padding-block:16px}
+.season-lane-cell.is-lane-hidden{display:none}
+.season-unranked{display:flex;align-items:center;gap:16px;padding:24px 0;border-bottom:1px solid var(--line)}
+.season-unranked>svg{flex-shrink:0;color:var(--accent)}
+.season-unranked p{font-size:13px;flex:1}
+.season-unranked strong{color:var(--ink);font-weight:500}
+.season-empty{padding:48px 24px;border:1px solid var(--line);text-align:center}
+.season-empty p{margin:16px 0 24px}
+.season-provenance{padding-bottom:64px}
+.season-method-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:56px;margin-top:32px}
+.season-method-grid h3,.season-balance-heading h3{font-size:18px;font-weight:500;margin:0 0 16px}
+.season-method-grid p{margin-top:16px;line-height:1.8}
+.season-source-facts{margin:0;font-size:13px;min-width:0}
+.season-source-facts>div{display:grid;grid-template-columns:140px minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.season-source-facts dt{color:var(--muted)}
+.season-source-facts dd{margin:0;overflow-wrap:anywhere}
+.season-provenance a,.season-build-source a,.season-detail-source a{color:var(--accent);text-decoration:underline;text-underline-offset:4px;display:inline-flex;align-items:center;gap:4px;min-height:44px;padding-block:8px}
+.season-source-facts code{font-size:11px;overflow-wrap:anywhere}
+.season-balance-heading{padding-top:48px;margin-top:40px;border-top:1px solid var(--line)}
+.season-balance-heading h3{font-size:24px;margin-top:12px}
+.season-balance-heading>p:last-child{max-width:80ch}
+.season-balance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:24px;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.season-balance-grid article{padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.season-balance-grid h4{margin:0 0 12px;font-size:18px;font-weight:500}
+.season-balance-grid h4 button{min-height:44px;display:inline-flex;align-items:center;gap:16px;color:var(--ink);padding:0;background:transparent;text-align:left}
+.season-balance-grid p{font-size:13px;line-height:1.8}
+.season-balance-grid .season-implication{color:var(--ink);margin-top:12px}
+.season-image-fallback{display:grid;place-items:center;width:100%;height:100%;background:var(--raised);color:var(--muted)}
+.season-hero-detail{border-top:1px solid var(--line);margin-top:32px;padding-top:24px}
+.season-hero-detail h3{font:400 24px/1.5 "Lexend Exa",Arial,sans-serif;margin:8px 0 16px}
+.season-detail-warning,.season-build-source,.season-detail-source{font-size:13px;line-height:1.8}
+.season-detail-tiers{list-style:none;padding:0;margin:24px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.season-detail-tiers li{border:1px solid var(--line);padding:16px;display:flex;align-items:center;gap:16px}
+.season-detail-tiers strong{display:block;font-size:14px;font-weight:500}
+.season-detail-tiers li div>span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.season-detail-markers{display:flex!important;gap:4px;flex-wrap:wrap}
+.season-detail-patch{padding:16px;border:1px solid var(--line);background:var(--raised);margin-block:16px}
+.season-detail-patch p{font-size:13px;margin-top:8px}
+.season-build-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:32px 0 24px}
+.season-build-heading h3{margin-bottom:0}
+.season-build-heading label{min-width:140px}
+.season-build{display:grid;gap:24px}
+.season-build-group h4{font-size:14px;font-weight:500;margin:0 0 12px}
+.season-build-group ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0;gap:12px}
+.season-build-group li{min-width:0;display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);font-size:12px;overflow-wrap:anywhere}
+.season-build-group img{width:48px;height:48px;flex-shrink:0;object-fit:cover}
+.season-build-group strong{display:block;color:var(--accent);font-size:13px}
+.season-build-source{margin-top:24px}
+.season-detail-source{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
+@media(min-width:1100px){.season-toolbar{position:sticky;top:var(--season-toolbar-top,88px);z-index:3}}
+@media(min-width:1600px){.season-tier-cell{gap:16px 12px;padding:20px 12px}.season-tile-name{font-size:13px}}
+@media(max-width:1099px){.season-content{padding-inline:32px}.season-toolbar{grid-template-columns:1fr 1fr}.season-reset{align-self:end}.season-method-grid{gap:32px}.season-source-facts>div{grid-template-columns:1fr;gap:4px}.season-spotlight-copy{padding-inline:32px}.season-build-group ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+  .season-content{padding-inline:16px}
+  .season-intro-inner{padding:64px 16px 40px}
+  .season-intro h1{font-size:32px;letter-spacing:.06em;margin-block:24px}
+  .season-intro h1 span{font-size:12px;letter-spacing:.22em;line-height:1.8}
+  .season-intro-description{font-size:14px}
+  .season-dates{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;font-size:11px}
+  .season-dates>span{display:none}
+  .season-intro .season-actions{display:grid;gap:12px}
+  .season-snapshot-note{font-size:11px;line-height:1.8}
+  .season-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .season-stats>div{padding:20px 12px;border-bottom:1px solid rgba(255,255,255,.12)}
+  .season-stats>div:nth-child(2){border-right:0}
+  .season-stats dt{font-size:11px}
+  .season-spotlight{margin-top:40px;min-height:620px}
+  .season-spotlight-top{padding:16px;display:block}
+  .season-spotlight-top>span{display:block;margin-top:8px;font-size:11px}
+  .season-spotlight-art{object-position:62% center}
+  .season-spotlight[data-spotlight-hero=ryoma] .season-spotlight-art{object-position:30% center}
+  .season-spotlight:is([data-spotlight-hero=billow],[data-spotlight-hero=elandorr]) .season-spotlight-art{object-position:44% center}
+  .season-spotlight-scrim{background:linear-gradient(0deg,#000 8%,rgba(0,0,0,.75) 42%,rgba(0,0,0,.12) 85%),linear-gradient(180deg,rgba(0,0,0,.65),transparent 25%)}
+  .season-spotlight-copy{padding:180px 20px 24px}
+  .season-spotlight h2{font-size:32px;overflow-wrap:anywhere}
+  .season-spotlight-score{gap:12px;flex-wrap:wrap}
+  .season-spotlight-score strong{font-size:24px}
+  .season-spotlight-copy .season-actions{gap:8px}
+  .season-spotlight-lanes button{flex-direction:column;gap:8px;font-size:10px;min-height:72px;padding:8px 2px}
+  .season-spotlight-lanes svg{font-size:18px}
+  .season-board-section,.season-provenance{padding-top:48px}
+  .season-section-heading{display:block}
+  .season-section-heading h2{font-size:24px}
+  .season-section-heading>.season-text-link{margin-top:8px}
+  .season-toolbar{gap:16px 12px;padding-block:20px}
+  .season-toolbar .season-search{grid-column:1/-1}
+  .season-toolbar label>span:first-child{font-size:11px}
+  .season-toolbar .season-reset{grid-column:1/-1}
+  .season-toolbar select{padding-inline:8px;font-size:12px}
+  .season-lane-selectors{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .season-lane-selectors .season-all-lanes{display:none}
+  .season-lane-selectors button{flex-direction:column;gap:8px;min-height:72px;font-size:10px;padding:8px 2px}
+  .season-lane-selectors button.is-mobile-selected{background:var(--raised);color:var(--accent)}
+  .season-lane-selectors button.is-mobile-selected{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+  .season-board-meta{display:block}
+  .season-board-meta>p+p{margin-top:8px}
+  .season-mobile-context{display:inline}
+  .season-matrix :is(.season-matrix-header,.season-matrix-row){grid-template-columns:56px minmax(0,1fr)}
+  .season-matrix .season-lane-cell{display:none}
+  .season-matrix .season-lane-cell.is-mobile-active{display:grid}
+  .season-matrix .season-matrix-header .is-mobile-active{display:flex}
+  .season-matrix .season-tier-cell{grid-template-columns:repeat(3,minmax(0,1fr));padding:12px 8px;gap:16px 8px}
+  .season-rank strong{font-size:24px}
+  .season-rank>span{font-size:9px}
+  .season-tile-name{font-size:11px}
+  .season-marker{font-size:8px;padding:2px}
+  .season-unranked{align-items:start;flex-wrap:wrap}
+  .season-unranked p{min-width:200px}
+  .season-unranked>.season-text-link{margin-left:32px}
+  .season-method-grid{grid-template-columns:1fr;gap:24px}
+  .season-source-facts>div{grid-template-columns:110px minmax(0,1fr);gap:12px}
+  .season-balance-grid{grid-template-columns:1fr}
+  .season-balance-grid article{padding:20px}
+  .season-build-heading{display:block}
+  .season-build-heading label{margin-top:16px}
+  .season-build-group ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .season-build-group li{display:block;padding:8px}
+  .season-build-group img{margin-bottom:8px}
+  .season-detail-tiers{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.season-page *,.season-hero-detail *{scroll-behavior:auto!important;transition:none!important}.season-tile:hover img{transform:none}}

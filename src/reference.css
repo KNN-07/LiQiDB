@@ -1,0 +1,87 @@
+/* Original LiQiDB components, adapted from the measured TierLQ design system. */
+:root{
+  --bg:#000;--panel:#0c0c0e;--raised:#141417;--ink:#f3f2ef;--muted:#a9a8ae;
+  --line:rgba(255,255,255,.12);--accent:#d9b56c;--accent-ink:#000;
+  --shadow-card:none;--shadow-dialog:0 30px 80px -20px rgba(0,0,0,.9);
+  --radius:0px;--small-radius:0px;--display:"Lexend Exa","Be Vietnam Pro",system-ui,sans-serif;
+  --body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --tier-s:#d9b56c;--tier-a:#b9a9ff;--tier-b:#86d0c3;--tier-c:#8ea3cc;--tier-d:#7a797f;
+  --motion-ease:cubic-bezier(.22,.8,.18,1);
+}
+:root[data-theme=light]{
+  --bg:#f2f1ed;--panel:#fff;--raised:#f6f5f2;--ink:#0b0b0c;--muted:#4f4e54;
+  --line:rgba(10,10,12,.12);--accent:#7f5d17;--accent-ink:#fff;
+  --tier-s:#85611a;--tier-a:#6a52d6;--tier-b:#1d7f72;--tier-c:#3e5e9e;--tier-d:#6f6e74;
+  --shadow-card:none;--shadow-dialog:0 30px 80px -24px rgba(20,20,24,.35);
+}
+@media(prefers-color-scheme:light){
+  :root[data-theme=system]{
+    --bg:#f2f1ed;--panel:#fff;--raised:#f6f5f2;--ink:#0b0b0c;--muted:#4f4e54;
+    --line:rgba(10,10,12,.12);--accent:#7f5d17;--accent-ink:#fff;
+    --tier-s:#85611a;--tier-a:#6a52d6;--tier-b:#1d7f72;--tier-c:#3e5e9e;--tier-d:#6f6e74;
+    --shadow-card:none;--shadow-dialog:0 30px 80px -24px rgba(20,20,24,.35);
+  }
+}
+body{font:15px/1.6 var(--body)}
+h1,h2,h3{font-family:var(--display)}
+h1{font-weight:300;letter-spacing:.08em;text-transform:uppercase}
+.content{max-width:1432px;padding-inline:56px}
+.site-header{position:relative;background:var(--bg);backdrop-filter:none;padding-inline:clamp(20px,4vw,56px);gap:16px}
+.site-header nav{border:0;border-radius:0;background:none;padding:0;gap:0}
+.site-header nav a{font:400 11px/1.5 var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:0;gap:6px;padding-inline:12px}
+.site-header nav a.active{background:transparent;box-shadow:inset 0 -1px currentColor}
+.site-header nav a:hover{background:var(--raised)}
+.brand-mark,.theme-label select{border-radius:0}
+.theme-label select{font-family:var(--body)}
+:root[data-route=meta] .site-header{background:#000;color:#f3f2ef;border-color:rgba(255,255,255,.12)}
+:root[data-route=meta] .site-header nav a{color:#a9a8ae}
+:root[data-route=meta] .site-header nav a.active{color:#f3f2ef}
+:root[data-route=meta] .site-header nav a:hover{background:#141417}
+:root[data-route=meta] .theme-label select{background:#000;color:#f3f2ef;border-color:rgba(255,255,255,.26)}
+.page-intro{padding-block:64px 40px}
+.page-intro h1{font-size:40px;line-height:1.3}
+.eyebrow{font-family:var(--display);font-weight:400;letter-spacing:.22em;text-transform:uppercase}
+.button,.role-filters button,.search-field,.sort select,.feature,.hero-card,.guide-note,
+.record-card,.tier-notice,.tier-board,.tier-hero,.empty,dialog,.record-icon,.record-top img,
+.record-facts>div,.stats-grid>div,.matchup-card,.matchup-notice,.matchup-hero,.matchup-hero img,.hero-matchups{border-radius:0}
+.button{font-family:var(--display);font-weight:400;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);gap:12px}
+.button.secondary{background:transparent;color:var(--ink)}
+.button.secondary:hover{background:var(--raised)}
+.feature h2{font:300 36px/1.4 var(--display);letter-spacing:.04em}
+.hero-grid{gap:24px 16px}
+.hero-card{box-shadow:none;border:1px solid var(--line)}
+.hero-card-name{font:500 16px/1.5 var(--body)}
+.section-heading h2,.detail-section h2{font-family:var(--display);font-weight:400}
+.record-card,.matchup-card{box-shadow:none}
+.record-top h2{font-family:var(--body);font-weight:500}
+.matchup-hero strong{font:400 22px/1.5 var(--display)}
+.matchup-copy h2,.matchup-copy h3{font-family:var(--body)}
+.detail-title h1{font-family:var(--display);font-weight:300;letter-spacing:.04em}
+.stats-grid strong{font-size:20px}
+.detail-section p{max-width:72ch}
+.matchup-copy details{margin-top:20px;border-top:1px solid var(--line);padding-top:12px}
+.matchup-copy summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--ink)}
+.matchup-copy details li{margin-bottom:12px;color:var(--muted);font-size:14px}
+.counter-more{text-align:center;margin:32px 0}
+.catalog-source{display:grid;max-width:480px;gap:8px;margin-bottom:24px}
+.catalog-source>span{font-size:13px;color:var(--muted)}
+.catalog-source select{width:100%;min-width:0}
+footer{padding-inline:16px}
+footer p a{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:1200px) and (min-width:761px){
+  .site-header{height:auto;flex-wrap:wrap;padding-block:16px}
+  .site-header nav{order:3;width:100%;justify-content:center}
+}
+@media(max-width:760px){
+  .content{padding-inline:16px}.site-header{padding:16px 16px 0}
+  .site-header nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .site-header nav a{font-family:var(--body);font-size:11px;letter-spacing:0;padding-inline:4px}
+  .site-header nav .svg-inline--fa{font-size:11px}
+  .page-intro{padding-block:40px 24px}.page-intro h1{font-size:28px;letter-spacing:.04em}
+  .intro-copy{font-size:15px}.feature h2{font-size:28px}
+  .hero-card-copy{left:10px;right:10px}.hero-card-name{font-size:15px}
+  .detail-title h1{font-size:30px}.detail-body{font-size:15px}
+  .record-heading h1{font:500 20px/1.4 var(--body);letter-spacing:0;text-transform:none}
+  .skill p,.lore{font-size:16px}.matchup-hero strong{font-size:18px}
+  footer{margin-inline:16px;padding-inline:0}
+}

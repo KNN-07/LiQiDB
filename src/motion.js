@@ -17,7 +17,7 @@ export function createViewMotion(main) {
 
   preference.addEventListener('change', clear);
   main.addEventListener('focusin', event => {
-    const card = event.target.closest('.hero-card, .record-card, .matchup-card');
+    const card = event.target.closest('.hero-card, .record-card, .matchup-card, .season-tile');
     if (card) finish(card);
   });
 
@@ -28,7 +28,7 @@ export function createViewMotion(main) {
       ...(reduced ? {} : { translateY: [12, 0] }),
       duration: reduced ? 100 : duration,
       delay: reduced ? 0 : delay,
-      ease: cubicBezier(.22, 1, .36, 1),
+      ease: cubicBezier(.22, .8, .18, 1),
       onComplete: () => finish(element),
     });
     entries.set(element, animation);
@@ -39,7 +39,7 @@ export function createViewMotion(main) {
     enter() {
       const time = getComputedStyle(document.documentElement).getPropertyValue('--motion-enter').trim();
       const duration = parseFloat(time) * (time.endsWith('ms') ? 1 : 1000);
-      main.querySelectorAll('.page-intro, .feature, .tier-notice, .matchup-notice')
+      main.querySelectorAll('.page-intro, .feature, .tier-notice, .matchup-notice, .season-intro, .season-spotlight')
         .forEach((element, index) => reveal(element, index * 32, duration));
       observer = new IntersectionObserver(entries => {
         entries.filter(entry => entry.isIntersecting).forEach((entry, index) => {
@@ -47,7 +47,7 @@ export function createViewMotion(main) {
           observer.unobserve(entry.target);
         });
       }, { threshold: .08 });
-      main.querySelectorAll('.hero-card, .record-card, .matchup-card')
+      main.querySelectorAll('.hero-card, .record-card, .matchup-card, .season-tile')
         .forEach(element => observer.observe(element));
     },
   };

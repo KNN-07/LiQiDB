@@ -105,15 +105,82 @@ Marksman from their Vietnamese class labels.
 `public/data/counters.json` is original Vietnamese editorial content, separate
 from the crawled collections. It records review date, directed `counter` and
 `target` hero slugs, a mechanism, limitations, evidence type and per-pair URLs.
-Three pairs have explicit matchup analysis in Sforum's September 6, 2023 article;
-the historical date is visible beside its link. Four are LiQiDB inferences from
-two official Garena ability descriptions, labelled as mechanics analysis.
-Neither type is presented as current meta or a guaranteed outcome.
+There are 132 directed pairs, covering all 130 hero/form slugs as targets.
+130 are LiQiDB inferences from official ability descriptions, checked against
+the September 29 baseline and October 15, 2026 balance notes. The distinct
+Alice → Aleister and Thane → Grakk selections from Sforum's September 6, 2023
+article are retained with their historical attribution.
+
+Every pair includes exact hero/skill-slot/name references, an explanation of
+the interaction, a limitation, qualitative role/range/damage context and URLs.
+All 130 targets and all referenced skill identities are checked by tests.
+Missing or implausible CMS stats are not treated as current numerical evidence.
+These are conditional editorial recommendations, not measured matchup win
+rates, an exhaustive matchup matrix or official Garena counter endorsements.
+Dirak's CMS still combines his cannon with skill 3; the October 15 note moves
+it to independent skill 4. The UI warns about that mismatch rather than
+silently rewriting the source kit. Triệu Vân's new untargeted dash and the
+other October 15 changes are included in the reasoning.
 
 The browser exports `counterGuide`, `matchups` and `filterMatchups(query)`.
 Search accepts either hero's name/title/class without reversing direction.
 The source URLs and date are shipped with every card; official pages generally
 do not state their last skill-update date.
+
+## TierLQ seasonal reference
+
+`public/data/season-meta.json` and `reference-builds.json` import factual
+seasonal data from `https://github.com/tierlq/tierlq.github.io`, pinned at
+`6a37d2310fdaf22c37d98389736a63cad253857e` (October 15, 2026 code commit).
+The live `assets/data.js` matched that revision. Its SHA-256 is
+`90bc5a759804e799efdca494945f4d0aa4541373c810ee5cf3acac757d5166bb`.
+`assets/builds.js` SHA-256 is
+`25a3d81f7e95acbbfce3fcb7d9ec09117a6fc6203183afbb89eaf2e9e51f1c92`.
+The original source scripts are not shipped or run in the application.
+
+The displayed TierLQ sample date is **October 11, 2026**, with an October 10
+community ROV META component. The current Vietnam season is **2026-S4,
+Vết Nứt Thời Không**, which began September 29 at 06:00 Vietnam time.
+Official sources:
+
+```text
+https://lienquan.garena.vn/quy-trinh-cap-nhat-phien-ban-vet-nut-thoi-khong-29-09-2026/
+https://lienquan.garena.vn/chi-tiet-ban-cap-nhat-vet-nut-thoi-khong-29-09-2026/
+https://lienquan.garena.vn/dieu-chinh-giua-mua-pb-vet-nut-thoi-khong-15-10-2026/
+```
+
+The latest balance verified on October 16 is October 15. It postdates the tier
+sample. Imported tiers are therefore labelled pre-balance and not recalculated
+from patch direction. Eight affected heroes have a separate official patch
+overlay. Original skill and stat fields remain intact.
+
+The import contains 146 lane records for 129 local hero/form slugs, including
+both Flowborn forms, with source rank, score, tier, secondary-role markers,
+manual overrides and source tournament samples. Edras resolves to local slug
+`11596`. Evita is absent from the tier source, so no tier is invented for her.
+TierLQ cites a 214-game ĐTDV sample and a 299-game previous-season sample.
+Those counts and rates are attributed source claims, not independently
+verified global or ranked statistics. The composite combines Vietnamese and
+Thai professional play, older samples, community and editorial/media inputs.
+Actual weights are 0.4/0.15/0.12/0.2/0.1, normalized over available inputs;
+low-presence Thai pro records use 0.04. Rounded displayed percentages total
+99, so they are not substituted for the actual weights. Existing computed
+results and manual overrides are preserved.
+
+148 hero/lane builds include item IDs, arcana counts and spell IDs. They were
+imported on October 16; the source provides no separate build verification
+date. The October 11 tier sample is not a claimed build freshness date. Supplementary
+catalogs contain 64 items, 21 arcana and 9 spells; they are selectable alongside
+the original 112/88/9 catalogs. Every build ID resolves to its catalog.
+Images point to immutable raw GitHub assets under the same commit (`b/i-*`,
+`b/a-*`, `b/t-*`); no image binaries are copied into this project.
+
+The source repo had no declared license when checked. No source application,
+analytics or long skill-summary prose was copied. LiQiDB uses original DOM
+components informed by measured palette, type, geometry and interactions,
+with visible credit to the source site and repository. Game rights remain
+with Garena / TiMi. Lexend Exa and Be Vietnam Pro load through Google Fonts
+with swap and local system fallbacks; icons and Anime.js remain bundled.
 
 ## Refresh
 

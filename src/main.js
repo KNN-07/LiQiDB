@@ -1,6 +1,8 @@
 import './style.css';
+import './reference.css';
 import { glyph } from './icons.js';
 import { createViewMotion } from './motion.js';
+import { renderSeason, renderHeroSeason } from './season.js';
 
 const main = document.querySelector('main');
 const dialog = document.querySelector('#detail');
@@ -12,6 +14,8 @@ const image = (url, alt, cls = '', eager = false) => url ? `<img src="${escape(u
 const normalize = value => data.normalize(value);
 const readStored = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 let data, query = '', selectedRole = 'All', sort = 'name';
+let counterLimit = 12, catalogSource = 'snapshot';
+const seasonState = { lane: 'all', className: 'All', trend: 'all', spotlight: 'top' };
 let rankings = readStored('liqidb-tiers', {});
 const tiers = ['S', 'A', 'B', 'C', 'D'];
 const motion = createViewMotion(main);
@@ -24,13 +28,13 @@ function setTheme() {
 theme.addEventListener('change', setTheme);
 setTheme();
 for (const link of document.querySelectorAll('[data-view]')) {
-  const name = {heroes:'heroes', 'tier-list':'fighter', counters:'counter', items:'tank', runes:'rune', spells:'spell'}[link.dataset.view];
+  const name = {meta:'rune', heroes:'heroes', 'tier-list':'fighter', counters:'counter', items:'tank', runes:'rune', spells:'spell'}[link.dataset.view];
   link.insertAdjacentHTML('afterbegin', glyph(name));
 }
 for (const placeholder of document.querySelectorAll('span[data-icon]')) placeholder.innerHTML = glyph(placeholder.dataset.icon);
 const view = () => {
   const route = location.hash.slice(1).split('/')[0];
-  return ['heroes','counters','tier-list','items','runes','spells'].includes(route) ? route : 'heroes';
+  return ['meta','heroes','counters','tier-list','items','runes','spells'].includes(route) ? route : 'meta';
 };
 
 function header(title, subtitle, eyebrow = 'CẨM NANG LIÊN QUÂN MOBILE') {
@@ -58,8 +62,8 @@ function renderCounters() {
     return `<button class="matchup-hero" data-hero="${escape(slug)}" aria-label="Xem tướng ${escape(hero.name)}">${image(portrait(hero), hero.name)}<span><small>${label}</small><strong>${escape(hero.name)}</strong><span>${escape(role(hero))}</span></span></button>`;
   };
   main.innerHTML = `<div class="content">${header('Chọn tướng. Đổi thế đối đầu.', 'Tìm lựa chọn khắc chế theo bộ kỹ năng, hiểu cách đánh và giới hạn của từng cặp.', 'CẨM NANG KHẮC CHẾ')}
-    <aside class="matchup-notice">${glyph('info')}<div><strong>Mũi tên chỉ hướng khắc chế, không phải bảo đảm thắng.</strong><p>Các cặp được tuyển chọn có nguồn tham khảo, không bao phủ mọi tướng. Hiệu quả còn phụ thuộc phiên bản, kỹ năng, trang bị và phối hợp. Đọc điều kiện trước khi chọn.</p></div></aside>
-    ${toolbar('cặp đối đầu', list.length)}<div id="results">${list.length ? `<div class="matchup-grid">${list.map(pair => `<article class="matchup-card"><div class="matchup-pair">${participant(pair.counter, 'Lựa chọn khắc chế')}<span class="matchup-direction">${glyph('arrow')}<span class="sr-only">khắc chế</span></span>${participant(pair.target, 'Tướng đối phương')}</div><div class="matchup-copy"><h2>Vì sao hiệu quả?</h2><p>${escape(pair.reason)}</p><h3>Điều kiện &amp; giới hạn</h3><p>${escape(pair.limitation)}</p><div class="matchup-sources"><span>${pair.basis === 'explicit' ? 'Nguồn phân tích cặp đấu' : 'Phân tích từ cơ chế kỹ năng'}</span>${pair.sources.map(source => `<a href="${escape(source.url)}" target="_blank" rel="noreferrer">${escape(source.title)} ${glyph('external')}</a>`).join('')}</div></div></article>`).join('')}</div>` : empty()}</div><p class="data-caption">Đối chiếu nguồn ngày ${new Date(`${data.counterGuide.reviewedAt}T00:00:00`).toLocaleDateString('vi-VN')}. Không phải bảng tỷ lệ thắng hay xếp hạng sức mạnh hiện tại.</p></div>`;
+    <aside class="matchup-notice">${glyph('info')}<div><strong>${data.matchups.length} cặp · đủ ${data.heroes.length} tướng / dạng để tra cứu.</strong><p>Mỗi tướng có ít nhất một phương án đối phó, không phải ma trận mọi cặp đấu. Mũi tên là hướng khắc chế có điều kiện, không phải bảo đảm thắng hay tỷ lệ thắng thực nghiệm.</p><p>Đối chiếu cân bằng 15/10/2026; mô tả và chỉ số CMS có thể chậm cập nhật. Phân tích là nhận định của LiQiDB. <a href="${escape(data.counterGuide.balanceUrl)}" target="_blank" rel="noreferrer">Đọc bản cân bằng chính thức ${glyph('external')}</a></p></div></aside>
+    ${toolbar('cặp đối đầu', list.length)}<div id="results">${list.length ? `<div class="matchup-grid">${list.slice(0,counterLimit).map((pair,index) => `<article class="matchup-card" data-matchup-index="${index}" tabindex="-1"><div class="matchup-pair">${participant(pair.counter, 'Lựa chọn khắc chế')}<span class="matchup-direction">${glyph('arrow')}<span class="sr-only">khắc chế</span></span>${participant(pair.target, 'Tướng đối phương')}</div><div class="matchup-copy"><h2>Vì sao hiệu quả?</h2><p>${escape(pair.reason)}</p><h3>Điều kiện &amp; giới hạn</h3><p>${escape(pair.limitation)}</p><details><summary>Cơ sở kỹ năng &amp; đặc tính</summary><ul>${pair.skillEvidence.map(evidence=>`<li><strong>${escape(data.heroes.find(hero=>hero.slug===evidence.hero).name)} · ${escape(evidence.skillName)}</strong>: ${escape(evidence.interaction)}</li>`).join('')}</ul><p>${escape(pair.specContext)}</p></details><div class="matchup-sources"><span>${pair.basis === 'explicit' ? 'Nguồn phân tích cặp đấu có ghi ngày' : 'Suy luận từ cơ chế, không phải thống kê'} · đối chiếu 16/10/2026</span>${pair.sources.map(source => `<a href="${escape(source.url)}" target="_blank" rel="noreferrer">${escape(source.title)} ${glyph('external')}</a>`).join('')}</div></div></article>`).join('')}</div><div class="counter-more"><p class="data-caption" aria-live="polite">Đang hiển thị ${Math.min(counterLimit,list.length)} / ${list.length} cặp</p>${list.length > counterLimit ? '<button class="button secondary" id="counter-more">Xem thêm 12 cặp</button>' : ''}</div>` : empty()}</div><p class="data-caption">Bộ kỹ năng là cơ sở chọn cách đối phó; chỉ số thiếu hoặc bất thường không được dùng để tính sát thương hay kết luận thắng đấu tay đôi.</p></div>`;
 }
 function renderHeroes() {
   const list = filtered(data.heroes);
@@ -77,10 +81,14 @@ function recordCard(record, index) {
   const preview = typeof text === 'string' ? text : Array.isArray(text) ? text.map(t => typeof t === 'string' ? t : `${t.label || t.name || ''} ${t.value || ''}`).join(' / ') : '';
   return `<button class="record-card" data-record="${index}"><div class="record-top">${image(record.icon || record.image || record.portrait, record.name)}<div><h2>${escape(record.name)}</h2><span>${escape(record.gold ? `${record.gold.toLocaleString('vi-VN')} vàng` : record.tier ? `Cấp ${record.tier}` : record.cooldown ? `Hồi chiêu: ${record.cooldown}` : 'Thông tin tham khảo')}</span></div><span aria-hidden="true">${glyph('external')}</span></div><p>${escape(preview.slice(0,180)) || 'Xem hiệu ứng và thông tin chi tiết.'}</p></button>`;
 }
+function collectionRecords(type) {
+  return catalogSource === 'reference' ? data.referenceBuilds[{items:'itemCatalog',runes:'arcanaCatalog',spells:'spellCatalog'}[type]] : data[type];
+}
 function renderCollection(type) {
   const [title, headline, subtitle] = collectionNames[type];
-  const list = filtered(data[type]);
-  main.innerHTML = `<div class="content">${header(headline, subtitle, `CẨM NANG ${title.toLocaleUpperCase('vi-VN')}`)}${toolbar(title.toLocaleLowerCase('vi-VN'),list.length)}<div id="results">${list.length ? `<div class="record-grid">${list.map(r => recordCard(r, data[type].indexOf(r))).join('')}</div>` : empty()}</div><p class="data-caption">Dữ liệu nguồn ngày ${new Date(data.meta.snapshotDate).toLocaleDateString('vi-VN',{year:'numeric',month:'long',day:'numeric'})}. Chọn một mục để xem thông tin đầy đủ.</p></div>`;
+  const records = collectionRecords(type);
+  const list = filtered(records);
+  main.innerHTML = `<div class="content">${header(headline, subtitle, `CẨM NANG ${title.toLocaleUpperCase('vi-VN')}`)}<label class="catalog-source sort"><span>Nguồn dữ liệu</span><select id="catalog-source"><option value="snapshot"${catalogSource==='snapshot'?' selected':''}>Garena / Fandom · lần thu thập 16/10</option><option value="reference"${catalogSource==='reference'?' selected':''}>TierLQ · bộ dữ liệu tham khảo</option></select></label>${toolbar(title.toLocaleLowerCase('vi-VN'),list.length)}<div id="results">${list.length ? `<div class="record-grid">${list.map(r => recordCard(r, records.indexOf(r))).join('')}</div>` : empty()}</div><p class="data-caption">${catalogSource==='reference'?'Bản tham khảo TierLQ, nhập ngày 16/10/2026; không coi là chỉ số sau mọi cập nhật cân bằng. Nguồn gốc ở từng mục.':'Lần thu thập nguồn ngày '+new Date(data.meta.snapshotDate).toLocaleDateString('vi-VN',{year:'numeric',month:'long',day:'numeric'})}. Chọn một mục để xem thông tin đầy đủ.</p></div>`;
 }
 function tierHero(hero) {
   const rank = tiers.includes(rankings[hero.slug]) ? rankings[hero.slug] : '';
@@ -90,7 +98,7 @@ function renderTiers() {
   const pool = filtered(data.heroes).filter(h => !tiers.includes(rankings[h.slug]));
   const rankedCount = data.heroes.filter(h => tiers.includes(rankings[h.slug])).length;
   main.innerHTML = `<div class="content">${header('Xếp hạng theo cách bạn chơi.', 'Tạo bảng xếp hạng tướng theo trải nghiệm của riêng bạn.', 'BẢNG XẾP HẠNG CÁ NHÂN')}
-  <div class="tier-notice"><span class="note-mark">${glyph('info')}</span><p><strong>Đây là đánh giá cá nhân, không phải xếp hạng thi đấu.</strong> Nguồn dữ liệu không có bậc sức mạnh hay tỷ lệ thắng. Lựa chọn của bạn được tự động lưu trong trình duyệt này.</p></div>
+  <div class="tier-notice"><span class="note-mark">${glyph('info')}</span><p><strong>Đây là đánh giá cá nhân, không phải xếp hạng thi đấu.</strong> Bảng này độc lập với tier cộng đồng trong mục Meta mùa. Lựa chọn của bạn được tự động lưu trong trình duyệt này.</p></div>
   <div class="section-heading"><h2>Bảng của tôi <span>${rankedCount} tướng đã xếp</span></h2><div class="cluster"><button class="button secondary" id="export">Tải tệp JSON ${glyph('download')}</button><button class="button secondary" id="reset-tiers"${rankedCount ? '' : ' disabled'}>Đặt lại bảng</button></div></div>
   <section class="tier-board" aria-label="Bảng xếp hạng cá nhân">${tiers.map(t => `<div class="tier-row"><h2>${t}<small>BẬC</small></h2><div class="tier-members">${data.heroes.filter(h => rankings[h.slug] === t).map(tierHero).join('') || `<p class="tier-empty">Chọn bậc ${t} trong danh sách bên dưới mỗi tướng.</p>`}</div></div>`).join('')}</section>
   <div class="section-heading pool-heading"><h2>Tướng chưa xếp hạng <span>${data.heroes.length-rankedCount}</span></h2></div>${toolbar('tướng',pool.length)}<section class="tier-pool">${pool.map(tierHero).join('') || '<p class="tier-empty">Không có tướng chưa xếp hạng phù hợp với tìm kiếm.</p>'}</section><p id="save-status" class="data-caption" role="status">Đã lưu trong trình duyệt. Tải tệp JSON để giữ một bản sao.</p></div>`;
@@ -98,12 +106,13 @@ function renderTiers() {
 function render(animate = false) {
   motion.clear();
   const current = view();
+  document.documentElement.dataset.route = current;
   for (const link of document.querySelectorAll('[data-view]')) {
     link.classList.toggle('active', link.dataset.view === current);
     if (link.dataset.view === current) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current');
   }
-  document.title = `${current === 'heroes' ? 'Tướng' : current === 'counters' ? 'Cặp khắc chế' : current === 'tier-list' ? 'Bảng xếp hạng cá nhân' : collectionNames[current][0]} - LiQiDB`;
-  if (current === 'heroes') renderHeroes(); else if (current === 'counters') renderCounters(); else if (current === 'tier-list') renderTiers(); else renderCollection(current);
+  document.title = `${current === 'meta' ? 'Meta mùa S4 2026' : current === 'heroes' ? 'Tướng' : current === 'counters' ? 'Cặp khắc chế' : current === 'tier-list' ? 'Bảng xếp hạng cá nhân' : collectionNames[current][0]} - LiQiDB`;
+  if (current === 'meta') main.innerHTML = renderSeason(data, query, seasonState); else if (current === 'heroes') renderHeroes(); else if (current === 'counters') renderCounters(); else if (current === 'tier-list') renderTiers(); else renderCollection(current);
   if (animate) motion.enter();
 }
 function detailSources(sources = {}) {
@@ -120,6 +129,10 @@ function openHero(slug) {
   matchups.className = 'detail-section hero-matchups';
   matchups.innerHTML = `<h2>${glyph('counter')} Cặp khắc chế</h2><p>${pairs.length ? `${pairs.length} cặp có phân tích cho ${escape(hero.name)} trong cẩm nang.` : 'Cẩm nang chưa có phân tích cặp đấu cho tướng này.'}</p><a class="button secondary" href="#counters${pairs.length ? `/${escape(slug)}` : ''}">${pairs.length ? 'Xem cặp đối đầu liên quan' : 'Khám phá các cặp đã có'} ${glyph('arrow')}</a>`;
   dialog.querySelector('.detail-body').prepend(matchups);
+  const seasonContext = document.createElement('div');
+  seasonContext.className = 'hero-season-context';
+  seasonContext.innerHTML = renderHeroSeason(data, slug);
+  dialog.querySelector('.detail-body').prepend(seasonContext);
   dialog.showModal();
   dialog.scrollTop = 0;
 }
@@ -136,13 +149,22 @@ function renderValue(value) {
   return escape(translated ?? value);
 }
 function openRecord(index) {
-  const r = data[view()][index];
+  const r = collectionRecords(view())[index];
   const factFields = ['group', 'tier', 'gold', 'color', 'seasonal', 'rawName'];
   dialog.innerHTML = `<button class="close-dialog" aria-label="Đóng thông tin chi tiết">${glyph('close')}</button><div class="detail-body record-detail"><div class="record-heading">${image(r.icon||r.image,r.name,'record-icon',true)}<div><p class="eyebrow">CẨM NANG ${collectionNames[view()][0].toLocaleUpperCase('vi-VN')}</p><h1 id="detail-title">${escape(r.name)}</h1></div></div><div class="record-facts">${Object.entries(r).filter(([k])=>factFields.includes(k)).map(([k,v])=>`<div><span>${escape(humanize(k))}</span><strong>${renderValue(v)}</strong></div>`).join('')}</div>${Object.entries(r).filter(([k])=> !['name','slug','icon','image','sources','searchKey','portrait',...factFields].includes(k)).map(([k,v])=>`<section class="detail-section"><h2>${escape(humanize(k))}</h2><div>${renderValue(v)}</div></section>`).join('')}${detailSources(r.sources)}</div>`;
   dialog.showModal();
   dialog.scrollTop = 0;
 }
 main.addEventListener('click',event=>{
+  const jump = event.target.closest('[data-season-jump]');
+  if(jump) document.querySelector(jump.dataset.seasonJump === 'method' ? '#season-method' : '#season-board').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+
+  const lane = event.target.closest('[data-season-lane]');
+  if(lane) { seasonState.lane=lane.dataset.seasonLane; render(); document.querySelector(`[data-season-lane="${CSS.escape(seasonState.lane)}"]`).focus({preventScroll:true}); }
+  const spotlight = event.target.closest('[data-spotlight]');
+  if(spotlight) { seasonState.spotlight=spotlight.dataset.spotlight; render(); document.querySelector(`[data-spotlight="${CSS.escape(seasonState.spotlight)}"]`).focus({preventScroll:true}); }
+  if(event.target.closest('[data-season-reset]')) { query='';seasonState.lane='all';seasonState.className='All';seasonState.trend='all';render();document.querySelector('#search').focus({preventScroll:true}); }
+  if(event.target.closest('#counter-more')) { const firstNew=counterLimit;counterLimit+=12;render();document.querySelector(`[data-matchup-index="${firstNew}"]`).focus({preventScroll:true}); }
   const hero = event.target.closest('[data-hero]');
   if(hero) return openHero(hero.dataset.hero);
   const record = event.target.closest('[data-record]');
@@ -162,9 +184,11 @@ main.addEventListener('click',event=>{
 });
 main.addEventListener('input',event=>{
   if(event.target.id!=='search') return;
-  const position=event.target.selectionStart;query=event.target.value;render();const input=document.querySelector('#search');input.focus();input.setSelectionRange(position,position);
+  const position=event.target.selectionStart;query=event.target.value;counterLimit=12;render();const input=document.querySelector('#search');input.focus();input.setSelectionRange(position,position);
 });
 main.addEventListener('change',event=>{
+  if(event.target.id==='catalog-source') {catalogSource=event.target.value;query='';render();document.querySelector('#catalog-source').focus({preventScroll:true});}
+  if(event.target.id==='season-class'||event.target.id==='season-trend') { const id=event.target.id;seasonState[id==='season-class'?'className':'trend']=event.target.value;render();document.querySelector(`#${id}`).focus({preventScroll:true}); }
   if(event.target.id==='sort') { sort=event.target.value;render();document.querySelector('#sort').focus({preventScroll:true}); }
   if(event.target.dataset.rank) {
     const slug=event.target.dataset.rank;
@@ -178,11 +202,18 @@ dialog.addEventListener('click',event=>{
   if(event.target.closest('.close-dialog, .close-dialog-inline') || event.target === dialog) dialog.close();
   if(event.target.closest('#confirm-reset')) {rankings={};localStorage.removeItem('liqidb-tiers');dialog.close();render();}
 });
+dialog.addEventListener('change',event=>{
+  if(event.target.id==='build-lane') {
+    const slug=event.target.dataset.buildHero;
+    dialog.querySelector('.hero-season-context').innerHTML=renderHeroSeason(data,slug,event.target.value);
+    dialog.querySelector('#build-lane').focus({preventScroll:true});
+  }
+});
 function routeQuery() {
   const slug = view() === 'counters' ? location.hash.split('/')[1] : '';
   query = data.heroes.find(hero => hero.slug === slug)?.name || '';
 }
-window.addEventListener('hashchange',()=>{routeQuery();selectedRole='All';dialog.close();render(true);window.scrollTo(0,0);});
+window.addEventListener('hashchange',()=>{routeQuery();selectedRole='All';counterLimit=12;dialog.close();render(true);window.scrollTo(0,0);});
 document.addEventListener('keydown',event=>{
   if(event.key==='/' && !dialog.open && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) {event.preventDefault();document.querySelector('#search')?.focus();}
 });

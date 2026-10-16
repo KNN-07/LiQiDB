@@ -1,7 +1,7 @@
 # LiQiDB
 
 Cẩm nang Liên Quân Mobile bằng **tiếng Việt**, gồm tướng, kỹ năng, trang bị,
-ngọc, phép bổ trợ, cặp khắc chế và bảng xếp hạng cá nhân.
+ngọc, phép bổ trợ, meta theo mùa, cặp khắc chế và bảng xếp hạng cá nhân.
 
 **[Mở cẩm nang LiQiDB](https://knn-07.github.io/LiQiDB/)**
 
@@ -18,6 +18,12 @@ Arena of Valor Fandom và bản dịch tiểu sử được chia sẻ theo giấ
 dữ liệu, nguồn tham khảo và giấy phép. Liên kết kho dữ liệu gốc luôn có ở
 chân trang và phần nguồn của mỗi tướng.
 
+Thiết kế và dữ liệu mùa tham khảo **[TierLQ](https://tierlq.github.io/)**,
+từ [mã nguồn TierLQ](https://github.com/tierlq/tierlq.github.io) tại commit
+`6a37d2310fdaf22c37d98389736a63cad253857e`. Giao diện LiQiDB được triển khai
+riêng theo màu sắc, kiểu chữ, bố cục spotlight và bảng tier của nguồn; không
+nhập mã ứng dụng hay mã theo dõi của nguồn.
+
 Biểu tượng **Font Awesome Free** thuộc Fonticons, Inc. (CC BY 4.0 cho SVG;
 MIT cho mã thư viện). **Anime.js** của Julian Garnier dùng giấy phép MIT.
 Bản ghi công và giấy phép được xuất bản cùng trang trong
@@ -26,10 +32,15 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
 ## Tính năng
 
 - Tra cứu 130 tướng: vai trò, chỉ số, kỹ năng, trang bị gợi ý và tiểu sử.
-- 7 cặp khắc chế có hướng, giải thích cơ chế, điều kiện và liên kết nguồn.
+- Meta **S4 2026 — Vết Nứt Thời Không**: 146 bản ghi theo đường cho 129
+  tướng / dạng, giữ nguyên tier và điểm tổng hợp từ mẫu TierLQ ngày 11/10/2026.
+- 132 cặp khắc chế có hướng, bao phủ đủ 130 tướng / dạng, giải thích cơ chế,
+  điều kiện, kỹ năng làm cơ sở và liên kết nguồn.
   Tìm theo tên một trong hai tướng hoặc mở từ thông tin chi tiết.
+- 148 build theo tướng và đường từ TierLQ: trang bị, ngọc và phép bổ trợ.
 - Tìm kiếm không dấu, lọc vai trò và sắp xếp tên theo tiếng Việt.
 - 112 trang bị, 88 ngọc và 9 phép bổ trợ với thông tin chi tiết.
+  Có thể chuyển sang danh mục TierLQ gồm 64 trang bị, 21 ngọc và 9 phép.
 - Tạo bảng xếp hạng S–D, tự động lưu trong trình duyệt, đặt lại và tải tệp JSON.
 - Giao diện sáng, tối hoặc theo hệ thống; dùng được trên điện thoại và máy tính.
 - Hiệu ứng xuất hiện khi chuyển trang, thẻ tướng phản hồi khi rê/bấm và cửa sổ
@@ -38,7 +49,13 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
   đóng gói cùng trang, không phụ thuộc CDN.
 - Phím `/` để tìm nhanh; phím `Escape` để đóng thông tin chi tiết.
 
-Bảng xếp hạng phản ánh đánh giá cá nhân, **không phải** xếp hạng thi đấu hay
+Mẫu tier ngày **11/10/2026** có trước cân bằng chính thức **15/10/2026**.
+Trang hiển thị riêng các thay đổi mới, không giả lập tier đã tính lại.
+Evita chưa có tier từ nguồn. Số liệu giải đấu là mẫu do nguồn công bố,
+không phải tỷ lệ thắng xếp hạng toàn máy chủ. Các cặp khắc chế là suy luận
+biên tập có điều kiện, không phải kết quả đo tỷ lệ thắng.
+
+Bảng xếp hạng cá nhân phản ánh đánh giá của bạn, **không phải** xếp hạng thi đấu hay
 tỷ lệ thắng thực tế. Bảng được lưu trên thiết bị của bạn; hãy tải tệp JSON để
 giữ một bản sao. Thông tin tham khảo có thể khác phiên bản trò chơi đang dùng.
 
@@ -78,7 +95,8 @@ kết như `/LiQiDB/#tier-list` không cần cấu hình chuyển hướng máy 
 `public/data` chứa bản thu thập lại ngày **16/10/2026**, bằng mã crawler gốc
 `c92526a134b434ca3f40936e393deb86f90dffc2`. Bản mới có Evita, cập nhật 8
 tướng và bỏ hai phép theo mùa không còn trong danh sách nguồn. Hình ảnh tải
-từ máy chủ Garena nên cần kết nối mạng. Ngày thu thập không bảo đảm các trang
+từ máy chủ Garena và kho TierLQ nên cần kết nối mạng. Kiểu chữ Lexend Exa và
+Be Vietnam Pro tải qua Google Fonts, có phông hệ thống dự phòng. Ngày thu thập không bảo đảm các trang
 nguồn đã cập nhật đủ mọi thay đổi cân bằng trong trò chơi.
 
 Lệnh dưới đây **chỉ nhập bản JSON đã xuất bản của kho gốc**, không chạy crawler.
@@ -97,6 +115,8 @@ cập nhật bản dịch tiếng Việt tương ứng trước khi xuất bản
 Để thu thập mới, dùng bản checkout riêng của kho gốc tại mã crawler nói trên,
 chạy `npm run data`, kiểm tra thay đổi rồi nhập các bộ dữ liệu vào `public/data`.
 Ghi ngày thực tế và nguồn trong `meta.json`; không đổi ngày để giả lập dữ liệu mới.
-Cặp khắc chế là nội dung tuyển chọn riêng trong `counters.json`, không bị ghi đè
-khi thu thập nguồn. Phân tích nguồn cặp đấu năm 2023 được ghi rõ ngày; các cặp
-suy luận từ kỹ năng không được trình bày như kết luận chính thức của Garena.
+Cặp khắc chế là nội dung biên tập riêng trong `counters.json`, không bị ghi đè
+khi thu thập nguồn. Các cặp có đối chiếu cân bằng 15/10/2026; không so sát thương
+bằng chỉ số CMS thiếu hoặc bất thường. Hai cặp tuyển chọn từ bài năm 2023 vẫn
+ghi rõ ngày. `season-meta.json` và `reference-builds.json` lưu riêng commit,
+hàm băm và ngày mẫu của TierLQ; không đổi ngày mẫu theo ngày tải dữ liệu.

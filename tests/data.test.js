@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, test } from 'bun:test';
 import { readFile } from 'node:fs/promises';
 
-const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi', 'counters'];
+const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi', 'counters', 'season-meta', 'reference-builds'];
 const snapshots = Object.fromEntries(await Promise.all(names.map(async (name) => [
   name,
   JSON.parse(await readFile(new URL(`../public/data/${name}.json`, import.meta.url), 'utf8')),
@@ -32,7 +32,7 @@ afterAll(() => server.stop(true));
 describe('pinned data integrity', () => {
   test('loads every collection without dropping record fields', () => {
     expect(requested.sort()).toEqual(
-      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters'].map((name) => `./data/${name}.json`).sort(),
+      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds'].map((name) => `./data/${name}.json`).sort(),
     );
     for (const name of ['heroes', 'items', 'runes', 'spells']) {
       expect(data[name]).toEqual(snapshots[name]);
@@ -115,6 +115,73 @@ describe('curated counter-pick guide', () => {
     expect(data.filterMatchups(data.heroes.find(hero => hero.slug === pair.counter).name)).toContain(pair);
     expect(data.filterMatchups('')).toEqual(data.matchups);
     expect(data.filterMatchups('no-such-matchup')).toEqual([]);
+  });
+
+  test('covers every hero form with resolvable skill evidence', () => {
+    expect([...new Set(data.matchups.map(pair => pair.target))].sort()).toEqual(
+      data.heroes.map(hero => hero.slug).sort(),
+    );
+    expect(data.counterGuide.balanceDate).toBe(data.seasonMeta.balance.date);
+    for (const pair of data.matchups) {
+      expect(pair.specContext.trim().length).toBeGreaterThan(0);
+      expect(new Set(pair.skillEvidence.map(evidence => evidence.hero))).toEqual(
+        new Set([pair.counter, pair.target]),
+      );
+      for (const evidence of pair.skillEvidence) {
+        const hero = data.heroes.find(hero => hero.slug === evidence.hero);
+        expect(hero.skills.find(skill => skill.slot === evidence.slot)?.name).toBe(evidence.skillName);
+        expect(evidence.interaction.trim().length).toBeGreaterThan(0);
+      }
+    }
+  });
+});
+
+describe('seasonal reference imports', () => {
+  test('keeps published role tiers distinct and traceable', () => {
+    const reference = data.seasonMeta;
+    expect(reference).toEqual(snapshots['season-meta']);
+    expect(reference.source.commit).toMatch(/^[a-f0-9]{40}$/);
+    expect(reference.source.dataSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(reference.source.dataDate < reference.balance.date).toBe(true);
+    const slugs = new Set(data.heroes.map(hero => hero.slug));
+    expect(new Set(reference.records.map(entry => entry.sourceId)).size).toBe(reference.records.length);
+    for (const entry of reference.records) {
+      expect(slugs.has(entry.slug)).toBe(true);
+      expect(Object.keys(reference.lanes)).toContain(entry.lane);
+      expect(['S', 'A', 'B', 'C', 'D']).toContain(entry.tier);
+      expect(entry.score).toBeGreaterThanOrEqual(1);
+      expect(entry.score).toBeLessThanOrEqual(5);
+      if (entry.tournament) {
+        expect(entry.tournament.games).toBe(reference.method.aogGames);
+        expect(entry.tournament.winRate).toBeGreaterThanOrEqual(0);
+        expect(entry.tournament.winRate).toBeLessThanOrEqual(100);
+      }
+    }
+    expect(reference.records.some(entry => entry.slug === 'flowborn' && entry.lane === 'ad')).toBe(true);
+    expect(reference.records.some(entry => entry.slug === 'flowborn-2' && entry.lane === 'mid')).toBe(true);
+    expect(reference.records.some(entry => entry.slug === 'evita')).toBe(false);
+  });
+
+  test('resolves every lane build and supplementary catalog', () => {
+    const reference = data.referenceBuilds;
+    expect(reference).toEqual(snapshots['reference-builds']);
+    expect(reference.source.commit).toBe(data.seasonMeta.source.commit);
+    const slugs = new Set(data.heroes.map(hero => hero.slug));
+    const items = new Set(reference.itemCatalog.map(item => item.slug));
+    const arcana = new Set(reference.arcanaCatalog.map(item => item.slug));
+    const spells = new Set(reference.spellCatalog.map(item => item.slug));
+    expect(new Set(reference.records.map(entry => `${entry.slug}:${entry.lane}`)).size).toBe(reference.records.length);
+    for (const entry of reference.records) {
+      expect(slugs.has(entry.slug)).toBe(true);
+      expect(new URL(entry.sourceUrl).protocol).toBe('https:');
+      expect(entry.items.length).toBeGreaterThan(0);
+      for (const item of entry.items) expect(items.has(item.id)).toBe(true);
+      for (const rune of entry.arcana) {
+        expect(arcana.has(rune.id)).toBe(true);
+        expect(rune.count).toBeGreaterThan(0);
+      }
+      for (const spell of entry.spells) expect(spells.has(spell.id)).toBe(true);
+    }
   });
 });
 

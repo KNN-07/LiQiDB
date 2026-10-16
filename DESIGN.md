@@ -51,3 +51,61 @@ AA text contrast target, visible keyboard focus, named fields, semantic landmark
 
 ## 9. Vietnamese-only content
 `lang=vi`; Vietnamese navigation, filters, statuses, dialogs, accessibility labels, metadata and README. Dates and numbers use vi-VN. Source proper names and machine-consumed route/storage/export keys remain stable. Local lore-vi.json translates all 79 source stories (1,041 paragraphs) under CC BY-SA 3.0 while retaining the untouched original snapshot and source attribution.
+
+## 10. TierLQ reference direction (October 16, 2026)
+
+The user explicitly replaced the previous visual direction with a detailed
+reference to https://tierlq.github.io/ and its repository. This section overrides
+earlier palette, typography, radius and shell rules where they differ.
+Implementation remains original; source data and design reference are credited.
+
+Runtime extraction: reference hero, spotlight and board at 1440/390, both themes,
+plus source filter sheet. Evidence: `.omo/evidence/season-meta/ref-*.png`.
+The source's WebGL hero uses its own gradient fallback in the QA browser.
+Foregrounding the tab and dispatching real scroll events is necessary to refresh
+its scroll-linked opacity before captures; stale blank frames are not references.
+
+- Color: dark background #000, panel #0c0c0e, raised #141417, ink #f3f2ef,
+  muted #a9a8ae, divider rgba(255,255,255,.12), gold #d9b56c. Light background
+  #f2f1ed, panel #fff, raised #f6f5f2, ink #0b0b0c, muted #4f4e54,
+  divider rgba(10,10,12,.12), gold #7f5d17. Tier S/A/B/C/D:
+  #d9b56c/#b9a9ff/#86d0c3/#8ea3cc/#7a797f; light S #85611a,
+  A #6a52d6, B #1d7f72, C #3e5e9e, D #6f6e74. Tier text labels carry meaning.
+- Type: Lexend Exa display/navigation (weights 200–500); Be Vietnam Pro body
+  (300–600), loaded with swap and system fallbacks. Display uppercase and
+  letter-spaced: 89.6px at 1440, 32px phone; secondary line 30.5px desktop,
+  12px phone. Section titles 32px/24px, body 15px/24px, metadata 12–13px.
+  Paragraphs remain sentence case for Vietnamese readability.
+- Geometry: document scroll, 1320px content cap, 56px desktop/16px phone gutters.
+  Square corners and thin neutral dividers replace rounded cards/shadows.
+  Controls remain at least 44px. LiQiDB's own brand and all destinations remain.
+  Shared header is compact and wraps on phones; the meta toolbar owns sticky
+  filtering behavior without covering focused content.
+- Hero: full-width near-black cosmic gradient, centered spaced headline,
+  compact season/balance dates, bordered calls to action and a four-cell
+  statistical strip (2×2 on phone). Never imply decorative particles are live
+  measured events. The actual data-source sample is explicitly labelled.
+- Spotlight: cinematic real hero artwork, bottom/side scrim, lane selector,
+  source tier/score and direct detail action. Manual lane selection is immediate;
+  no automatic carousel is required to understand the content. Phone focal
+  positions preserve faces: Ryoma 30%, Billow/Eland’orr 44%, other lane subjects
+  62%. Selected lane labels have a persistent underline as well as a tonal wash.
+- Tier board: S–D rows × five lanes on desktop, rank-label rail, square portrait
+  tiles, visible secondary/manual markers. Phone shows one selected lane,
+  with five accessible lane buttons; no document horizontal overflow.
+  Search, class and trend controls filter source records, not personal ranks.
+- Provenance: dates for season (29/09), source sample (11/10) and latest verified
+  balance (15/10) are distinct. Source scores remain the original snapshot;
+  no automatic post-patch promotions. Evita is explicitly not tiered by source.
+- Details: existing native dialogs retain focus/Escape/scroll behavior.
+  Source tiers and role-specific builds are separate from original source data;
+  counter reasoning cites both skill records and the latest patch context.
+  Phone catalog titles use 20px body type in sentence case so long rune names
+  retain their full modifiers without excessive display-heading wrapping.
+  All original features and personal storage/export keys survive the redesign.
+- Motion: retain Anime.js interruptible entry/reduced-motion contract. Use the
+  source ease cubic-bezier(.22,.8,.18,1), 400ms controls, 480ms arrivals.
+  No mandatory looping background, scroll hijacking, or reduced-motion movement.
+- Accessibility: preserve all visible labels, Font Awesome decorative SVGs,
+  keyboard focus, readable paragraph case and minimum touch targets. Reference
+  design is adapted to LiQiDB's richer navigation, not copied as a flat image.
