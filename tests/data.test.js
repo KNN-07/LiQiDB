@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, test } from 'bun:test';
 import { readFile } from 'node:fs/promises';
 
-const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info'];
+const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi'];
 const snapshots = Object.fromEntries(await Promise.all(names.map(async (name) => [
   name,
   JSON.parse(await readFile(new URL(`../public/data/${name}.json`, import.meta.url), 'utf8')),
@@ -32,7 +32,7 @@ afterAll(() => server.stop(true));
 describe('pinned data integrity', () => {
   test('loads every collection without dropping record fields', () => {
     expect(requested.sort()).toEqual(
-      ['heroes', 'items', 'runes', 'spells', 'meta'].map((name) => `./data/${name}.json`).sort(),
+      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi'].map((name) => `./data/${name}.json`).sort(),
     );
     for (const name of ['heroes', 'items', 'runes', 'spells']) {
       expect(data[name]).toEqual(snapshots[name]);
@@ -67,6 +67,22 @@ describe('pinned data integrity', () => {
     }
     for (const name of ['items', 'runes', 'spells']) {
       for (const record of data[name]) expect(record.icon).toMatch(/^https:\/\//);
+    }
+  });
+});
+
+describe('Vietnamese lore snapshot', () => {
+  test('covers the pinned source heroes without losing paragraphs', () => {
+    expect(data.loreTranslation.locale).toBe('vi');
+    expect(data.loreTranslation.sourceCommit).toBe(data.meta.commit);
+    expect(data.loreTranslation.license).toBe('CC-BY-SA-3.0');
+    const sourceHeroes = data.heroes.filter((hero) => hero.lore?.length);
+    expect(Object.keys(data.loreVi).sort()).toEqual(sourceHeroes.map((hero) => hero.slug).sort());
+    for (const hero of sourceHeroes) {
+      expect(data.loreVi[hero.slug]).toHaveLength(hero.lore.length);
+      expect(data.loreVi[hero.slug].every((paragraph) =>
+        typeof paragraph === 'string' && paragraph.trim().length > 0,
+      )).toBe(true);
     }
   });
 });

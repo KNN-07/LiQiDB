@@ -3,8 +3,7 @@ import './style.css';
 const main = document.querySelector('main');
 const dialog = document.querySelector('#detail');
 const escape = (value = '') => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const roleNames = {'Sát thủ':'Assassin','Đấu sĩ':'Warrior','Pháp sư':'Mage','Xạ thủ':'Marksman','Đỡ đòn':'Tank','Trợ thủ':'Support'};
-const role = hero => (hero.classes || []).map(c => roleNames[c] || c).join(' / ');
+const role = hero => (hero.classes || []).join(' / ');
 const portrait = hero => hero.portrait || hero.skins?.[0]?.thumb;
 const art = hero => hero.skins?.[0]?.splash || portrait(hero);
 const image = (url, alt, cls = '', eager = false) => url ? `<img src="${escape(url)}" alt="${escape(alt)}" class="${cls}" width="400" height="500" loading="${eager ? 'eager' : 'lazy'}" referrerpolicy="no-referrer">` : `<span class="image-fallback">${escape(alt.slice(0, 1))}</span>`;
@@ -23,54 +22,54 @@ theme.addEventListener('change', setTheme);
 setTheme();
 const view = () => ['heroes','tier-list','items','runes','spells'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'heroes';
 
-function header(title, subtitle, eyebrow = 'THE ATHANOR FIELD GUIDE') {
-  return `<section class="page-intro"><div><p class="eyebrow">${eyebrow}</p><h1>${title}</h1><p class="intro-copy">${subtitle}</p></div><span class="source-badge"><span class="status-dot"></span> Community-powered open data</span></section>`;
+function header(title, subtitle, eyebrow = 'CẨM NANG LIÊN QUÂN MOBILE') {
+  return `<section class="page-intro"><div><p class="eyebrow">${eyebrow}</p><h1>${title}</h1><p class="intro-copy">${subtitle}</p></div><span class="source-badge"><span class="status-dot"></span> Dữ liệu mở từ cộng đồng</span></section>`;
 }
 function toolbar(type, count) {
-  return `<div class="toolbar"><label class="search"><span>Search ${type}</span><div class="search-field"><span aria-hidden="true">&#9906;</span><input id="search" type="search" placeholder="Search by name${type === 'heroes' ? ' or title' : ''}..." value="${escape(query)}" autocomplete="off"><kbd>/</kbd></div></label><label class="sort"><span>Sort by</span><select id="sort"><option value="name"${sort === 'name' ? ' selected' : ''}>Name: A to Z</option><option value="reverse"${sort === 'reverse' ? ' selected' : ''}>Name: Z to A</option></select></label><span class="result-count" aria-live="polite">${count} ${type}</span></div>`;
+  return `<div class="toolbar"><label class="search"><span>Tìm ${type}</span><div class="search-field"><span aria-hidden="true">&#9906;</span><input id="search" type="search" placeholder="Nhập tên${type === 'tướng' ? ' hoặc danh hiệu' : ''}..." value="${escape(query)}" autocomplete="off"><kbd aria-hidden="true">/</kbd></div></label><label class="sort"><span>Sắp xếp</span><select id="sort"><option value="name"${sort === 'name' ? ' selected' : ''}>Tên: A đến Z</option><option value="reverse"${sort === 'reverse' ? ' selected' : ''}>Tên: Z đến A</option></select></label><span class="result-count" aria-live="polite">${count.toLocaleString('vi-VN')} ${type}</span></div>`;
 }
 function filtered(records) {
-  return data.filterRecords(records, query, selectedRole).sort((a,b) => sort === 'reverse' ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name));
+  return data.filterRecords(records, query, selectedRole).sort((a,b) => sort === 'reverse' ? b.name.localeCompare(a.name, 'vi') : a.name.localeCompare(b.name, 'vi'));
 }
 function heroCard(hero) {
-  return `<button class="hero-card" data-hero="${escape(hero.slug)}" aria-label="Explore ${escape(hero.name)}">${image(portrait(hero), hero.name)}<span class="card-scrim"></span><span class="hero-card-copy"><span class="hero-card-name">${escape(hero.name)}<span aria-hidden="true">&nearr;</span></span><span class="hero-card-role">${escape(role(hero))}</span></span></button>`;
+  return `<button class="hero-card" data-hero="${escape(hero.slug)}" aria-label="Xem tướng ${escape(hero.name)}">${image(portrait(hero), hero.name)}<span class="card-scrim"></span><span class="hero-card-copy"><span class="hero-card-name">${escape(hero.name)}<span aria-hidden="true">&nearr;</span></span><span class="hero-card-role">${escape(role(hero))}</span></span></button>`;
 }
 function empty() {
-  return `<section class="empty"><span class="empty-symbol" aria-hidden="true">&#9906;</span><h2>No matches in the field guide</h2><p>Try another name, or clear your filters to explore everything.</p><button class="button" data-clear>Clear filters</button></section>`;
+  return `<section class="empty"><span class="empty-symbol" aria-hidden="true">&#9906;</span><h2>Chưa tìm thấy kết quả</h2><p>Thử tên khác hoặc xóa bộ lọc để xem toàn bộ cẩm nang.</p><button class="button" data-clear>Xóa bộ lọc</button></section>`;
 }
 function renderHeroes() {
   const list = filtered(data.heroes);
   const feature = data.heroes.find(h => h.slug === 'airi') || data.heroes[0];
-  main.innerHTML = `<div class="content">${header('Know your next main.', 'Every hero. Every ability. Your edge in Athanor.')}
-  <section class="feature"><img class="feature-art" src="${escape(art(feature))}" alt="${escape(feature.name)} official artwork" width="1200" height="500" fetchpriority="high"><div class="feature-scrim"></div><div class="feature-copy"><p class="eyebrow">EXPLORE THE ROSTER</p><h2>Legends aren&rsquo;t born.<br>They&rsquo;re mastered.</h2><p>Find your playstyle. Learn the abilities.<br>Make your next match count.</p><button class="button" data-hero="${feature.slug}">Meet ${escape(feature.name)} <span>&nearr;</span></button></div><span class="feature-caption">${escape(feature.name)}<small>${escape(feature.title)}</small></span></section>
-  <section class="roster"><div class="section-heading"><h2>Hero database <span>${data.heroes.length}</span></h2><a href="#tier-list">Build your tier list &rarr;</a></div>
-  <div class="role-filters" role="group" aria-label="Filter heroes by class">${['All','Warrior','Assassin','Mage','Marksman','Tank','Support'].map((r,i)=>`<button data-role="${r}" aria-pressed="${selectedRole === r}" class="${selectedRole === r ? 'selected' : ''}"><span class="role-glyph" aria-hidden="true">${['&#10022;','&#9876;','&#9672;','&#10023;','&#10164;','&#11041;','&#10010;'][i]}</span>${r === 'All' ? 'All heroes' : r}</button>`).join('')}</div>
-  ${toolbar('heroes', list.length)}<div id="results">${list.length ? `<div class="hero-grid">${list.map(heroCard).join('')}</div>` : empty()}</div></section>
-  <aside class="guide-note"><span class="note-mark">i</span><div><strong>Your knowledge, built on open data.</strong><p>Original Vietnamese skill text and stats, preserved from the source. Reference data may differ from the live game.</p></div><a href="https://github.com/MLuc24/lien-quan-data" target="_blank" rel="noreferrer">Explore the source &nearr;</a></aside></div>`;
+  main.innerHTML = `<div class="content">${header('Hiểu tướng. Chọn lối chơi.', 'Tra cứu kỹ năng, trang bị và tìm vị tướng phù hợp với bạn.')}
+  <section class="feature"><img class="feature-art" src="${escape(art(feature))}" alt="Hình ảnh chính thức của ${escape(feature.name)}" width="1200" height="500" fetchpriority="high"><div class="feature-scrim"></div><div class="feature-copy"><p class="eyebrow">KHÁM PHÁ TƯỚNG</p><h2>Nắm rõ kỹ năng.<br>Tự tin giao tranh.</h2><p>Tìm lối chơi của bạn, hiểu từng chiêu thức.<br>Sẵn sàng cho trận đấu tiếp theo.</p><button class="button" data-hero="${feature.slug}">Khám phá ${escape(feature.name)} <span>&nearr;</span></button></div><span class="feature-caption">${escape(feature.name)}<small>${escape(feature.title)}</small></span></section>
+  <section class="roster"><div class="section-heading"><h2>Danh sách tướng <span>${data.heroes.length}</span></h2><a href="#tier-list">Tạo bảng xếp hạng &rarr;</a></div>
+  <div class="role-filters" role="group" aria-label="Lọc tướng theo vai trò">${['All','Đấu sĩ','Sát thủ','Pháp sư','Xạ thủ','Đỡ đòn','Trợ thủ'].map((r,i)=>`<button data-role="${r}" aria-pressed="${selectedRole === r}" class="${selectedRole === r ? 'selected' : ''}"><span class="role-glyph" aria-hidden="true">${['&#10022;','&#9876;','&#9672;','&#10023;','&#10164;','&#11041;','&#10010;'][i]}</span>${r === 'All' ? 'Tất cả tướng' : r}</button>`).join('')}</div>
+  ${toolbar('tướng', list.length)}<div id="results">${list.length ? `<div class="hero-grid">${list.map(heroCard).join('')}</div>` : empty()}</div></section>
+  <aside class="guide-note"><span class="note-mark" aria-hidden="true">i</span><div><strong>Tra cứu từ nguồn dữ liệu mở.</strong><p>Kỹ năng và chỉ số được giữ nguyên từ nguồn gốc. Thông tin tham khảo có thể khác phiên bản đang chơi.</p></div><a href="https://github.com/MLuc24/lien-quan-data" target="_blank" rel="noreferrer">Xem dữ liệu gốc &nearr;</a></aside></div>`;
 }
-const collectionNames = {items:['Equipment','Build for the battle ahead.','Discover equipment, stats, prices and unique passives.'],runes:['Arcana','Small choices. Lasting impact.','Explore arcana effects and tiers to shape your playstyle.'],spells:['Spells','One spell can change everything.','Know your summoner spells before you enter the arena.']};
+const collectionNames = {items:['Trang bị','Lên đồ cho từng trận đấu.','Tra cứu chỉ số, giá vàng và nội tại của từng trang bị.'],runes:['Ngọc','Chọn ngọc, định hình lối chơi.','Khám phá hiệu ứng và cấp ngọc để hoàn thiện bảng ngọc của bạn.'],spells:['Phép bổ trợ','Một phép, đổi thế trận.','Hiểu rõ phép bổ trợ trước khi bước vào giao tranh.']};
 function recordCard(record, index) {
   const text = record.description || record.effect || record.effects || record.stats || '';
   const preview = typeof text === 'string' ? text : Array.isArray(text) ? text.map(t => typeof t === 'string' ? t : `${t.label || t.name || ''} ${t.value || ''}`).join(' / ') : '';
-  return `<button class="record-card" data-record="${index}"><div class="record-top">${image(record.icon || record.image || record.portrait, record.name)}<div><h2>${escape(record.name)}</h2><span>${escape(record.gold ? `${record.gold.toLocaleString()} gold` : record.tier ? `Tier ${record.tier}` : record.cooldown ? `${record.cooldown} cooldown` : 'Source reference')}</span></div><span aria-hidden="true">&nearr;</span></div><p>${escape(preview.slice(0,180)) || 'View effects and source details.'}</p></button>`;
+  return `<button class="record-card" data-record="${index}"><div class="record-top">${image(record.icon || record.image || record.portrait, record.name)}<div><h2>${escape(record.name)}</h2><span>${escape(record.gold ? `${record.gold.toLocaleString('vi-VN')} vàng` : record.tier ? `Cấp ${record.tier}` : record.cooldown ? `Hồi chiêu: ${record.cooldown}` : 'Thông tin tham khảo')}</span></div><span aria-hidden="true">&nearr;</span></div><p>${escape(preview.slice(0,180)) || 'Xem hiệu ứng và thông tin chi tiết.'}</p></button>`;
 }
 function renderCollection(type) {
   const [title, headline, subtitle] = collectionNames[type];
   const list = filtered(data[type]);
-  main.innerHTML = `<div class="content">${header(headline, subtitle, `${title.toUpperCase()} DATABASE`)}${toolbar(title.toLowerCase(),list.length)}<div id="results">${list.length ? `<div class="record-grid">${list.map(r => recordCard(r, data[type].indexOf(r))).join('')}</div>` : empty()}</div><p class="data-caption">Vietnamese descriptions are preserved from the source. Snapshot: ${new Date(data.meta.snapshotDate).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}. Select a record for complete details.</p></div>`;
+  main.innerHTML = `<div class="content">${header(headline, subtitle, `CẨM NANG ${title.toLocaleUpperCase('vi-VN')}`)}${toolbar(title.toLocaleLowerCase('vi-VN'),list.length)}<div id="results">${list.length ? `<div class="record-grid">${list.map(r => recordCard(r, data[type].indexOf(r))).join('')}</div>` : empty()}</div><p class="data-caption">Dữ liệu nguồn ngày ${new Date(data.meta.snapshotDate).toLocaleDateString('vi-VN',{year:'numeric',month:'long',day:'numeric'})}. Chọn một mục để xem thông tin đầy đủ.</p></div>`;
 }
 function tierHero(hero) {
   const rank = tiers.includes(rankings[hero.slug]) ? rankings[hero.slug] : '';
-  return `<div class="tier-hero">${image(portrait(hero),hero.name)}<span>${escape(hero.name)}</span><label><span class="sr-only">Tier for ${escape(hero.name)}</span><select data-rank="${escape(hero.slug)}" aria-label="Tier for ${escape(hero.name)}"><option value=""${!rank ? ' selected' : ''}>Unranked</option>${tiers.map(t=>`<option${rank===t?' selected':''}>${t}</option>`).join('')}</select></label></div>`;
+  return `<div class="tier-hero">${image(portrait(hero),hero.name)}<span>${escape(hero.name)}</span><label><span class="sr-only">Bậc xếp hạng của ${escape(hero.name)}</span><select data-rank="${escape(hero.slug)}" aria-label="Bậc xếp hạng của ${escape(hero.name)}"><option value=""${!rank ? ' selected' : ''}>Chưa xếp</option>${tiers.map(t=>`<option${rank===t?' selected':''}>${t}</option>`).join('')}</select></label></div>`;
 }
 function renderTiers() {
   const pool = filtered(data.heroes).filter(h => !tiers.includes(rankings[h.slug]));
   const rankedCount = data.heroes.filter(h => tiers.includes(rankings[h.slug])).length;
-  main.innerHTML = `<div class="content">${header('Your roster. Your rules.', 'Create a tier list that reflects how you play.', 'PERSONAL TIER LIST BUILDER')}
-  <div class="tier-notice"><span class="note-mark">i</span><p><strong>Personal rankings, not a live meta ranking.</strong> The dataset does not include competitive tiers or win rates. Your choices save automatically in this browser.</p></div>
-  <div class="section-heading"><h2>My tier list <span>${rankedCount} ranked</span></h2><div class="cluster"><button class="button secondary" id="export">Export JSON &darr;</button><button class="button secondary" id="reset-tiers">Reset list</button></div></div>
-  <section class="tier-board" aria-label="Personal tier list">${tiers.map(t => `<div class="tier-row"><h2>${t}<small>TIER</small></h2><div class="tier-members">${data.heroes.filter(h => rankings[h.slug] === t).map(tierHero).join('') || `<p class="tier-empty">Assign a hero to ${t} using its tier selector.</p>`}</div></div>`).join('')}</section>
-  <div class="section-heading pool-heading"><h2>Unranked heroes <span>${data.heroes.length-rankedCount}</span></h2></div>${toolbar('heroes',pool.length)}<section class="tier-pool">${pool.map(tierHero).join('') || '<p class="tier-empty">No unranked heroes match your search.</p>'}</section><p id="save-status" class="data-caption" role="status">Saved locally. Use Export JSON to keep a copy.</p></div>`;
+  main.innerHTML = `<div class="content">${header('Xếp hạng theo cách bạn chơi.', 'Tạo bảng xếp hạng tướng theo trải nghiệm của riêng bạn.', 'BẢNG XẾP HẠNG CÁ NHÂN')}
+  <div class="tier-notice"><span class="note-mark" aria-hidden="true">i</span><p><strong>Đây là đánh giá cá nhân, không phải xếp hạng thi đấu.</strong> Nguồn dữ liệu không có bậc sức mạnh hay tỷ lệ thắng. Lựa chọn của bạn được tự động lưu trong trình duyệt này.</p></div>
+  <div class="section-heading"><h2>Bảng của tôi <span>${rankedCount} tướng đã xếp</span></h2><div class="cluster"><button class="button secondary" id="export">Tải tệp JSON &darr;</button><button class="button secondary" id="reset-tiers">Đặt lại bảng</button></div></div>
+  <section class="tier-board" aria-label="Bảng xếp hạng cá nhân">${tiers.map(t => `<div class="tier-row"><h2>${t}<small>BẬC</small></h2><div class="tier-members">${data.heroes.filter(h => rankings[h.slug] === t).map(tierHero).join('') || `<p class="tier-empty">Chọn bậc ${t} trong danh sách bên dưới mỗi tướng.</p>`}</div></div>`).join('')}</section>
+  <div class="section-heading pool-heading"><h2>Tướng chưa xếp hạng <span>${data.heroes.length-rankedCount}</span></h2></div>${toolbar('tướng',pool.length)}<section class="tier-pool">${pool.map(tierHero).join('') || '<p class="tier-empty">Không có tướng chưa xếp hạng phù hợp với tìm kiếm.</p>'}</section><p id="save-status" class="data-caption" role="status">Đã lưu trong trình duyệt. Tải tệp JSON để giữ một bản sao.</p></div>`;
 }
 function render() {
   const current = view();
@@ -78,32 +77,34 @@ function render() {
     link.classList.toggle('active', link.dataset.view === current);
     if (link.dataset.view === current) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current');
   }
-  document.title = `${current === 'heroes' ? 'Heroes' : current === 'tier-list' ? 'Personal Tier List' : collectionNames[current][0]} - LiQiDB`;
+  document.title = `${current === 'heroes' ? 'Tướng' : current === 'tier-list' ? 'Bảng xếp hạng cá nhân' : collectionNames[current][0]} - LiQiDB`;
   if (current === 'heroes') renderHeroes(); else if (current === 'tier-list') renderTiers(); else renderCollection(current);
 }
 function detailSources(sources = {}) {
-  return `<section class="detail-section sources"><h2>Sources &amp; attribution</h2><p>Game data and artwork: Garena / TiMi Studios. Wiki-derived lore, trivia and balance history: Arena of Valor Fandom contributors, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noreferrer">CC BY-SA 3.0</a>.</p><div class="cluster">${Object.entries(sources).filter(([,url])=> typeof url === 'string' && /^https?:\/\//.test(url)).map(([label,url])=>`<a href="${escape(url)}" target="_blank" rel="noreferrer">${escape(label)} &nearr;</a>`).join('')}<a href="https://github.com/MLuc24/lien-quan-data" target="_blank" rel="noreferrer">MLuc24 dataset &nearr;</a></div></section>`;
+  return `<section class="detail-section sources"><h2>Nguồn dữ liệu và ghi công</h2><p>Dữ liệu và hình ảnh thuộc Garena / TiMi Studios. Nội dung từ cộng đồng Arena of Valor Fandom và bản dịch tiểu sử được chia sẻ theo giấy phép <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noreferrer">CC BY-SA 3.0</a>.</p><div class="cluster">${Object.entries(sources).filter(([,url])=> typeof url === 'string' && /^https?:\/\//.test(url)).map(([label,url])=>`<a href="${escape(url)}" target="_blank" rel="noreferrer">${escape({garena:'Garena',fandomVi:'Wiki tiếng Việt',fandomEn:'Wiki quốc tế'}[label] || 'Nguồn tham khảo')} &nearr;</a>`).join('')}<a href="https://github.com/MLuc24/lien-quan-data" target="_blank" rel="noreferrer">Dữ liệu gốc từ MLuc24 &nearr;</a></div></section>`;
 }
 function openHero(slug) {
   const hero = data.heroes.find(h=>h.slug===slug);
   if (!hero) return;
-  dialog.innerHTML = `<button class="close-dialog" aria-label="Close hero details">&times;</button><div class="detail-art">${image(art(hero),hero.name,'',true)}<div class="detail-title"><p class="eyebrow">${escape(role(hero))} &nbsp; / &nbsp; ${escape(hero.lane || 'Athanor')}</p><h1 id="detail-title">${escape(hero.name)}</h1><p>${escape(hero.title)}</p></div></div><div class="detail-body"><section class="detail-section"><h2>Base stats</h2><div class="stats-grid">${(hero.stats || []).map(s=>`<div><span>${escape(s.label)}</span><strong>${escape(s.value)}</strong></div>`).join('') || '<p>Base stats are not provided by this source.</p>'}</div></section><section class="detail-section"><h2>Abilities <small>Original Vietnamese text</small></h2><div class="skills">${(hero.skills || []).map(s=>`<article class="skill">${image(s.icon,s.name)}<div><span class="eyebrow">${escape(s.slotLabel)}</span><h3>${escape(s.name)}</h3><p lang="vi">${escape(s.description)}</p></div></article>`).join('')}</div></section>
-  <section class="detail-section"><h2>Suggested builds</h2>${(hero.build?.itemSets || []).map((set,i)=>`<h3>Build ${i+1}</h3><div class="build-items">${set.map(name=>{const item=data.items.find(it=>normalize(it.name)===normalize(name));return `<div>${item?image(item.icon||item.image,name):''}<span>${escape(name)}</span></div>`}).join('')}</div>`).join('') || '<p>No suggested build is available in the source.</p>'}${(hero.build?.notes||[]).map(n=>`<p lang="vi">${escape(n)}</p>`).join('')}</section>${hero.lore?.length?`<section class="detail-section"><h2>Hero story</h2>${(Array.isArray(hero.lore)?hero.lore:[hero.lore]).map(paragraph=>`<p class="lore" lang="vi">${escape(paragraph)}</p>`).join('')}</section>`:''}${detailSources(hero.sources)}</div>`;
+  const lore = data.loreVi?.[hero.slug] || [];
+  dialog.innerHTML = `<button class="close-dialog" aria-label="Đóng chi tiết tướng">&times;</button><div class="detail-art">${image(art(hero),hero.name,'',true)}<div class="detail-title"><p class="eyebrow">${escape(role(hero))} &nbsp; / &nbsp; ${escape(hero.lane || 'Athanor')}</p><h1 id="detail-title">${escape(hero.name)}</h1><p>${escape(hero.title)}</p></div></div><div class="detail-body"><section class="detail-section"><h2>Chỉ số cơ bản</h2><div class="stats-grid">${(hero.stats || []).map(s=>`<div><span>${escape(s.label)}</span><strong>${renderValue(s.value)}</strong></div>`).join('') || '<p>Nguồn dữ liệu chưa cung cấp chỉ số cơ bản.</p>'}</div></section><section class="detail-section"><h2>Kỹ năng <small>Nội dung từ nguồn dữ liệu gốc</small></h2><div class="skills">${(hero.skills || []).map(s=>`<article class="skill">${image(s.icon,s.name)}<div><span class="eyebrow">${escape(s.slotLabel)}</span><h3>${escape(s.name)}</h3><p>${escape(s.description)}</p></div></article>`).join('')}</div></section>
+  <section class="detail-section"><h2>Trang bị gợi ý</h2>${(hero.build?.itemSets || []).map((set,i)=>`<h3>Bộ trang bị ${i+1}</h3><div class="build-items">${set.map(name=>{const item=data.items.find(it=>normalize(it.name)===normalize(name));return `<div>${item?image(item.icon||item.image,name):''}<span>${escape(name)}</span></div>`}).join('')}</div>`).join('') || '<p>Nguồn dữ liệu chưa có bộ trang bị gợi ý.</p>'}${(hero.build?.notes||[]).map(n=>`<p>${escape(n)}</p>`).join('')}</section><section class="detail-section"><h2>Tiểu sử tướng</h2>${lore.length ? lore.map(paragraph=>`<p class="lore">${escape(paragraph)}</p>`).join('') : '<p>Nguồn dữ liệu chưa có tiểu sử cho tướng này.</p>'}</section>${detailSources(hero.sources)}</div>`;
   dialog.showModal();
   dialog.scrollTop = 0;
 }
 function humanize(key) {
-  return key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/^./,s=>s.toUpperCase());
+  return {group:'Loại trang bị',tier:'Cấp',gold:'Giá vàng',stats:'Chỉ số',passives:'Nội tại',rawName:'Tên trong nguồn',color:'Màu ngọc',description:'Mô tả',seasonal:'Theo mùa'}[key] || 'Thông tin bổ sung';
 }
 function renderValue(value) {
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (typeof value === 'boolean') return value ? 'Có' : 'Không';
   if (Array.isArray(value)) return `<ul>${value.map(v=>`<li>${renderValue(v)}</li>`).join('')}</ul>`;
   if (value && typeof value === 'object') return `<dl>${Object.entries(value).map(([k,v])=>`<dt>${escape(humanize(k))}</dt><dd>${renderValue(v)}</dd>`).join('')}</dl>`;
-  return escape(value);
+  const translated = {Melee:'Cận chiến',Meele:'Cận chiến',Ranged:'Đánh xa',Range:'Đánh xa','Long Range':'Tầm xa',Near:'Tầm gần',Medium:'Tầm trung','Skill 2':'Chiêu 2','Ranged / Melee':'Đánh xa / Cận chiến','0 / 0% - inf/inf% (When trigger passive)':'0 / 0% – ∞ / ∞% (khi kích hoạt nội tại)'}[value];
+  return escape(translated ?? value);
 }
 function openRecord(index) {
   const r = data[view()][index];
-  dialog.innerHTML = `<button class="close-dialog" aria-label="Close details">&times;</button><div class="detail-body record-detail"><p class="eyebrow">${collectionNames[view()][0]} REFERENCE</p><h1 id="detail-title">${escape(r.name)}</h1>${image(r.icon||r.image,r.name,'record-icon',true)}${Object.entries(r).filter(([k])=> !['name','slug','icon','image','sources','searchKey','portrait'].includes(k)).map(([k,v])=>`<section class="detail-section"><h2>${escape(humanize(k))}</h2><div lang="vi">${renderValue(v)}</div></section>`).join('')}${detailSources(r.sources)}</div>`;
+  dialog.innerHTML = `<button class="close-dialog" aria-label="Đóng thông tin chi tiết">&times;</button><div class="detail-body record-detail"><p class="eyebrow">CẨM NANG ${collectionNames[view()][0].toLocaleUpperCase('vi-VN')}</p><h1 id="detail-title">${escape(r.name)}</h1>${image(r.icon||r.image,r.name,'record-icon',true)}${Object.entries(r).filter(([k])=> !['name','slug','icon','image','sources','searchKey','portrait'].includes(k)).map(([k,v])=>`<section class="detail-section"><h2>${escape(humanize(k))}</h2><div>${renderValue(v)}</div></section>`).join('')}${detailSources(r.sources)}</div>`;
   dialog.showModal();
   dialog.scrollTop = 0;
 }
@@ -117,12 +118,12 @@ main.addEventListener('click',event=>{
   if(event.target.closest('[data-clear]')) { query='';selectedRole='All';render();document.querySelector('#search').focus(); }
   if(event.target.closest('#reset-tiers')) {
     if(!Object.keys(rankings).length) return;
-    dialog.innerHTML='<div class="detail-body"><h1 id="detail-title">Reset your tier list?</h1><p>This removes the rankings saved in this browser. Export a copy first if you want to keep them.</p><div class="cluster"><button class="button secondary close-dialog-inline">Keep list</button><button class="button" id="confirm-reset">Reset rankings</button></div></div>';
+    dialog.innerHTML='<div class="detail-body"><h1 id="detail-title">Đặt lại bảng xếp hạng?</h1><p>Thao tác này xóa các bậc đã lưu trong trình duyệt. Hãy tải tệp JSON trước nếu bạn muốn giữ một bản sao.</p><div class="cluster"><button class="button secondary close-dialog-inline">Giữ nguyên</button><button class="button" id="confirm-reset">Xóa xếp hạng</button></div></div>';
     dialog.showModal();
   }
   if(event.target.closest('#export')) {
-    const blob=new Blob([JSON.stringify({name:'My AOV tier list',type:'personal',rankings},null,2)],{type:'application/json'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='liqidb-tier-list.json';a.click();URL.revokeObjectURL(a.href);
+    const blob=new Blob([JSON.stringify({name:'Bảng xếp hạng Liên Quân của tôi',type:'personal',rankings},null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='liqidb-xep-hang.json';a.click();URL.revokeObjectURL(a.href);
   }
 });
 main.addEventListener('input',event=>{
@@ -153,7 +154,7 @@ try {
   data = await import('./data.js');
   render();
 } catch(error) {
-  main.innerHTML='<section class="empty"><h1>The field guide could not load</h1><p>The local data snapshot is unavailable. Reload the page to try again.</p><button class="button" id="retry">Reload database</button></section>';
+  main.innerHTML='<section class="empty"><h1>Chưa tải được cẩm nang</h1><p>Không thể đọc dữ liệu của trang. Hãy tải lại để thử lần nữa.</p><button class="button" id="retry">Tải lại dữ liệu</button></section>';
   document.querySelector('#retry').onclick=()=>location.reload();
   console.error(error);
 }

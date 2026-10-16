@@ -4,9 +4,10 @@ async function load(name) {
   return response.json();
 }
 
-export const [heroes, items, runes, spells, meta] = await Promise.all(
-  ['heroes', 'items', 'runes', 'spells', 'meta'].map(load),
+export const [heroes, items, runes, spells, meta, loreTranslation] = await Promise.all(
+  ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi'].map(load),
 );
+export const loreVi = loreTranslation.heroes;
 
 export const roles = {
   'Sát thủ': 'Assassin',

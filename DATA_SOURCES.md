@@ -55,6 +55,19 @@ snapshots and exports `heroes`, `items`, `runes`, `spells`, and `meta`.
 The static build includes these files beside the WebUI, so it can be hosted
 at the domain root or beneath a GitHub Pages repository path.
 
+`public/data/lore-vi.json` is a local Vietnamese translation of the upstream
+hero lore, not another upstream snapshot. It records `locale`, `sourceCommit`,
+`license`, and a `heroes` object keyed by source slug. Every source paragraph
+is retained as one translated paragraph. The original English lore remains
+unchanged in `heroes.json` for provenance; the Vietnamese-only interface uses
+the translated paragraphs. These translations retain the wiki's CC BY-SA 3.0
+terms and attribution to Arena of Valor Fandom contributors.
+
+`src/data.js` additionally exports `loreTranslation` (the translation metadata
+and payload) and `loreVi` (the hero lookup). Refreshing the upstream snapshot
+requires refreshing the translations too; the integrity test checks the source
+commit, slug coverage, and paragraph counts.
+
 It also exports `normalize(text)`, `filterRecords(records, query,
 className = 'All')`, `roles`, and `getArtwork(hero)`. Search matches normalized
 names, titles, Vietnamese classes, and their English equivalents.
