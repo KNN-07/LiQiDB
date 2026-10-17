@@ -252,6 +252,10 @@ main.addEventListener('change',event=>{
   if(event.target.id === 'draft-ban' && event.target.value) {
     draftState.bans.push(event.target.value); render(); document.querySelector('#draft-ban').focus({preventScroll:true}); return;
   }
+  if(event.target.id === 'draft-year') {
+    draftState.historyYear = Number(event.target.value);
+    render(); document.querySelector('#draft-year').focus({preventScroll:true}); return;
+  }
   if(event.target.id === 'draft-inferred' || event.target.id === 'draft-role') {
     const id = event.target.id;
     if(id === 'draft-inferred') draftState.includeInferred = event.target.checked;

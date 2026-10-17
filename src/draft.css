@@ -42,6 +42,15 @@
 .draft-pair{padding:16px;background:var(--panel);margin-block:12px}
 .draft-pair p{margin:8px 0 16px;font-size:14px}
 .draft-empty{padding:24px;background:var(--panel)}
+.draft-targets,.draft-history,.draft-history-source{background:var(--panel);padding:16px;margin-block:16px}
+.draft-targets>strong{color:var(--accent)}
+.draft-targets p,.draft-history p,.draft-history-source p{margin-top:8px;font-size:14px}
+.draft-history a,.draft-history-source a{text-decoration:underline;text-underline-offset:4px}
+.draft-history-pair{border-top:1px solid var(--line);padding-block:16px}
+.draft-history-pair h3{font:500 16px/1.6 var(--body)}
+.draft-history-pair ul{padding-left:20px}
+.draft-history-pair li{margin-block:12px;overflow-wrap:anywhere}
+.draft-history-pair a{display:inline-block;min-height:44px;padding-block:8px}
 .draft-advisor button:disabled{opacity:.5;cursor:not-allowed;transform:none}
 @media(max-width:760px){
   .draft-teams,.draft-suggestions,.draft-scoreboard,.draft-bans{grid-template-columns:minmax(0,1fr)}

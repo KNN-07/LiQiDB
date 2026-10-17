@@ -173,3 +173,11 @@ Results render twelve cards at a time, never the complete matrix as DOM.
   entrance motion, restore focus, and announce a concise score status.
   Duplicate heroes and alternate forms cannot occupy multiple draft positions.
   Draft survives navigation within this page session, not browser reload.
+- Multi-target recommendations name favorable enemy targets and adverse targets
+  before details. Breadth is a separate count, not an inflated mechanics grade.
+  Existing neutral panels and text labels carry the distinction, never color alone.
+- Professional history is separate from mechanics: show games/wins, selected year,
+  actual same-game opponent pairs, recorded player names and source match links.
+  A native disclosure holds pair samples and missing-data limits. A labelled year
+  select defaults to the newest observed year; "all history" never implies current
+  patch strength. Historical results are observational, not causal counter proof.

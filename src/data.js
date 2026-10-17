@@ -1,4 +1,5 @@
 import { createGraphIndex } from './graph.js';
+import { createHistoryIndex } from './history.js';
 
 async function load(name) {
   const response = await fetch(`./data/${name}.json`);
@@ -6,10 +7,11 @@ async function load(name) {
   return response.json();
 }
 
-export const [heroes, items, runes, spells, meta, loreTranslation, counterGuide, seasonMeta, referenceBuilds, heroWiki, mechanicsRules, matchupGraph] = await Promise.all(
-  ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki', 'mechanics-rules', 'matchup-graph'].map(load),
+export const [heroes, items, runes, spells, meta, loreTranslation, counterGuide, seasonMeta, referenceBuilds, heroWiki, mechanicsRules, matchupGraph, proHistory] = await Promise.all(
+  ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki', 'mechanics-rules', 'matchup-graph', 'pro-history'].map(load),
 );
 export const graphIndex = createGraphIndex(matchupGraph);
+export const proHistoryIndex = createHistoryIndex(proHistory);
 export const loreVi = loreTranslation.heroes;
 export const matchups = counterGuide.pairs;
 

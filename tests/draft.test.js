@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test';
 import { evaluateDraft } from '../src/draft.js';
 import { createGraphIndex, graphPair } from '../src/graph.js';
+import { createHistoryIndex } from '../src/history.js';
 
 const fixture = (directions = []) => {
   const heroes = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
@@ -234,4 +235,56 @@ test('evaluation leaves caller data draft and options unchanged', () => {
   const original = structuredClone({ data, input, options });
   evaluateDraft(data, input, options);
   expect({ data, input, options }).toEqual(original);
+});
+
+test('one candidate answering two enemies outranks a stronger single-target answer', () => {
+  const data=fixture([
+    ['a','h','reviewed',5],
+    ['c','h','reviewed',2],['c','i','reviewed',2],
+  ]);
+  const result=evaluateDraft(data,draft([],['h','i']));
+  expect(result.picks[0].slug).toBe('c');
+  expect(result.picks[0].countered).toEqual(['h','i']);
+  expect(result.picks.find(row=>row.slug==='a').countered).toEqual(['h']);
+  expect(evaluateDraft(data,draft([],['h','i'],['c'])).picks[0].slug).toBe('a');
+});
+
+test('opposing mechanics and excluded inference cannot inflate multi-target coverage', () => {
+  const data=fixture([
+    ['a','h','reviewed',2],['a','i','inferred',2],['i','a','reviewed',3],
+    ['c','h','reviewed',2],['c','i','inferred',2],
+  ]);
+  let result=evaluateDraft(data,draft([],['h','i']));
+  expect(result.picks[0].slug).toBe('c');
+  expect(result.picks.find(row=>row.slug==='a')).toMatchObject({countered:['h'],threats:['i']});
+  result=evaluateDraft(data,draft([],['h','i']),{includeInferred:false});
+  expect(result.picks.find(row=>row.slug==='c').countered).toEqual(['h']);
+  expect(result.picks.find(row=>row.slug==='d').countered).toEqual([]);
+});
+
+test('actual joint history breaks mechanics ties but separate opponents and small samples do not', () => {
+  const data=fixture([
+    ['a','h','reviewed',2],['a','i','reviewed',2],
+    ['c','h','reviewed',2],['c','i','reviewed',2],
+  ]);
+  const snapshot={
+    heroes:data.heroes.map(hero=>({...hero,id:hero.slug})),
+    players:[],teams:[{name:'Blue'},{name:'Red'}],
+    matches:[{id:'m',date:'2025-01-01',tournament:'Recorded event'}],games:[],
+  };
+  for(const candidate of [0,2])for(let i=0;i<10;i++)snapshot.games.push({
+    id:`${candidate}-${i}`,match:0,number:i+1,blueTeam:0,redTeam:1,
+    blue:[candidate,3,4,5,6],red:[7,8,9,10,1],
+    bluePlayers:Array(5).fill(null),redPlayers:Array(5).fill(null),
+    winner:i<(candidate===2?8:2)?'blue':'red',
+  });
+  data.proHistoryIndex=createHistoryIndex(snapshot);
+  expect(evaluateDraft(data,draft([],['h','i'])).picks[0].slug).toBe('c');
+  expect(evaluateDraft(data,draft([],['h'])).picks[0].slug).toBe('a');
+  expect(evaluateDraft(data,draft([],['h','i']),{historyYear:2026}).picks[0].slug).toBe('a');
+  expect(evaluateDraft(data,draft([],['h','i']),{historyYear:0}).picks[0].joint)
+    .toMatchObject({targets:['h','i'],games:10,wins:8,eligible:true});
+  snapshot.games=snapshot.games.filter(game=>game.number<=2);
+  data.proHistoryIndex=createHistoryIndex(snapshot);
+  expect(evaluateDraft(data,draft([],['h','i'])).picks[0].slug).toBe('a');
 });

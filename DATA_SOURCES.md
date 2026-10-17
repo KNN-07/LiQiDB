@@ -315,6 +315,43 @@ fields, accented search, and role filters.
 
 ## Attribution and rights
 
+### AOVStats historical professional games
+
+`public/data/pro-history.json` is a normalized snapshot of the public historical
+series, games and draft actions used by `https://aovdata.vercel.app/match` and
+its hero pages, not a copy of the truncated top-counter analytics list.
+`scripts/crawl-pro-history.mjs` discovers the site's public read-only transport,
+paginates records by UUID and reconciles exact source counts before emitting a
+snapshot patch. Source totals, retrieval time, date range, hashes, unmapped heroes
+and excluded game IDs/reasons remain in the snapshot.
+
+Only recorded complete five-versus-five drafts with a valid side winner are used
+for recommendation history. A completed series without games does not invent
+game results. Sides use game-level blue/red team IDs, not series team order.
+Direct recorded player associations are retained; missing identities are not
+reconstructed from rosters. Old and reworked hero identities are not merged.
+`pick_order` is not assumed to be global chronological draft order.
+
+The runtime indexes every mapped hero, filters by selected year, and counts a
+joint enemy pair only when both opponents occur on the opposite side of that
+same game. Each displayed historical pair keeps its sample size and links to
+source series/game numbers. At least five matching games are needed for the
+history tie-break; `(wins + 5) / (games + 10)` is a disclosed smoothing heuristic,
+not a prediction or proof of causal advantage. Mechanics grades are unchanged.
+All-history counts are not presented as current-patch estimates.
+
+The October 17, 2026 crawl reconciled 14,799 games, 4,216 series and
+237,600 draft rows. It retains 13,730 usable games from April 15, 2017 through
+October 11, 2026, and 1,069 explicit exclusions (1,020 missing drafts).
+All 133 source heroes have usable appearances; 128 of the 130 local heroes map.
+Evita is absent, and the source name Sikong Zhen is not guessed to mean Bolt Baron.
+Game-side team metadata takes precedence over inconsistent series-team metadata;
+these source anomalies are recorded in the crawl report.
+
+To refresh, run `bun scripts/crawl-pro-history.mjs --patch --cache <owned-cache-dir>`
+and apply the emitted patch with `apply_patch`. The cache is resumable only when
+source counts and query projections match. Run `bun test` before publication.
+
 MLuc24 maintains the upstream data collection. Its README and LICENSE at the
 pinned commit distinguish the MIT-licensed crawler/merge code from game data.
 No upstream crawler code is copied here.

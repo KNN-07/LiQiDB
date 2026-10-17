@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, test } from 'bun:test';
 import { readFile } from 'node:fs/promises';
 
-const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki', 'mechanics-rules', 'matchup-graph'];
+const names = ['heroes', 'items', 'runes', 'spells', 'meta', 'crawl-info', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki', 'mechanics-rules', 'matchup-graph', 'pro-history'];
 const snapshots = Object.fromEntries(await Promise.all(names.map(async (name) => [
   name,
   JSON.parse(await readFile(new URL(`../public/data/${name}.json`, import.meta.url), 'utf8')),
@@ -32,8 +32,10 @@ afterAll(() => server.stop(true));
 describe('pinned data integrity', () => {
   test('loads every collection without dropping record fields', () => {
     expect(requested.sort()).toEqual(
-      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki', 'mechanics-rules', 'matchup-graph'].map((name) => `./data/${name}.json`).sort(),
+      ['heroes', 'items', 'runes', 'spells', 'meta', 'lore-vi', 'counters', 'season-meta', 'reference-builds', 'hero-wiki', 'mechanics-rules', 'matchup-graph', 'pro-history'].map((name) => `./data/${name}.json`).sort(),
     );
+    expect(data.proHistory).toEqual(snapshots['pro-history']);
+    expect(data.proHistoryIndex.byHero.size).toBeGreaterThan(0);
     for (const name of ['heroes', 'items', 'runes', 'spells']) {
       expect(data[name]).toEqual(snapshots[name]);
       expect(data[name].length).toBeGreaterThan(0);

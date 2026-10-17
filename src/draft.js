@@ -1,15 +1,18 @@
 import { graphPair } from './graph.js';
+import { getHeroHistory } from './history.js';
 
 // The roster exposes Flowborn's mage and marksman forms as separate records.
 const identity = slug => slug === 'flowborn-2' ? 'flowborn' : slug;
 
 export function evaluateDraft(data, draft, options = {}) {
   if (!options || typeof options !== 'object' || Array.isArray(options) ||
-      Object.keys(options).some(key => key !== 'includeInferred') ||
-      (options.includeInferred !== undefined && typeof options.includeInferred !== 'boolean')) {
-    throw new TypeError('Draft options must contain only a boolean includeInferred');
+      Object.keys(options).some(key => !['includeInferred','historyYear'].includes(key)) ||
+      (options.includeInferred !== undefined && typeof options.includeInferred !== 'boolean') ||
+      (options.historyYear !== undefined && (!Number.isInteger(options.historyYear) || options.historyYear < 0))) {
+    throw new TypeError('Draft options require boolean includeInferred and nonnegative integer historyYear');
   }
   const { includeInferred = true } = options;
+  const historyYear = options.historyYear ?? data.proHistoryIndex?.years[0] ?? 0;
   if (!draft || typeof draft !== 'object' || Array.isArray(draft)) {
     throw new TypeError('Draft must contain allies, enemies and bans arrays');
   }
@@ -57,11 +60,20 @@ export function evaluateDraft(data, draft, options = {}) {
   };
 
   const available = data.heroes.filter(hero => !used.has(identity(hero.slug)));
-  const rank = opponents => available.map(hero => ({
-    slug: hero.slug, ...summarize([hero.slug], opponents),
-  })).sort((a, b) =>
+  const rank = opponents => available.map(hero => {
+    const summary = summarize([hero.slug], opponents);
+    const countered = summary.pairs.filter(pair => pair.net > 0).map(pair => pair.enemy);
+    const threats = summary.pairs.filter(pair => pair.net < 0).map(pair => pair.enemy);
+    const history = getHeroHistory(data.proHistoryIndex, hero.slug, opponents, historyYear);
+    const joint = history.joint.find(pair => pair.eligible) || null;
+    return {slug:hero.slug, ...summary, countered, threats, history, joint};
+  }).sort((a, b) =>
     Number(b.score !== null) - Number(a.score !== null) ||
+    Number((b.score ?? 0) >= 0) - Number((a.score ?? 0) >= 0) ||
+    b.countered.length - a.countered.length ||
+    a.threats.length - b.threats.length ||
     (b.score ?? 0) - (a.score ?? 0) ||
+    (b.joint?.adjustedRate ?? 50) - (a.joint?.adjustedRate ?? 50) ||
     b.coverage - a.coverage ||
     (roster.get(a.slug).name ?? a.slug).localeCompare(roster.get(b.slug).name ?? b.slug, 'vi') ||
     a.slug.localeCompare(b.slug, 'vi'),

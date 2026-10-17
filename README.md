@@ -51,6 +51,10 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
   mỗi đội và danh sách đã cấm; điểm đội hình, gợi ý chọn và gợi ý cấm cập nhật
   ngay. Tướng đã chọn/cấm (kể cả dạng khác của Flowborn) không còn khả dụng.
   Có lọc tên/vai trò, chế độ chỉ dùng chứng cứ đã đối chiếu và xem cơ chế từng cặp.
+- Gợi ý một tướng đối phó nhiều mục tiêu: nêu rõ tướng địch có lợi thế/bất lợi
+  theo cơ chế. Lịch sử ván đấu chuyên nghiệp từ **AOVStats** cho biết ứng viên
+  từng gặp hai mục tiêu **cùng một ván** bao nhiêu lần, thắng bao nhiêu, tuyển thủ
+  nào được ghi nhận và liên kết ván gốc. Có lọc năm hoặc xem toàn bộ lịch sử.
 - Tìm kiếm không dấu, lọc vai trò và sắp xếp tên theo tiếng Việt.
 - 112 trang bị, 88 ngọc và 9 phép bổ trợ với thông tin chi tiết.
   Có thể chuyển sang danh mục TierLQ gồm 64 trang bị, 21 ngọc và 9 phép.
@@ -78,6 +82,16 @@ không chấm chỉ số. Không coi chỉ số gần 0 là cân bằng khi đ�
 Gợi ý chọn đối chiếu với đội địch; gợi ý cấm đối chiếu đe dọa với đội bạn.
 Chưa tính phối hợp đồng đội, đường đi, trình độ hay luật lượt cấm của từng giải.
 Đội hình giữ lại khi chuyển mục trong trang, nhưng không lưu qua lần tải lại.
+
+Lịch sử được thu thập từ các bản ghi ván và cấm/chọn công khai tại
+[AOVStats](https://aovdata.vercel.app/heroes), không suy từ bảng tổng hợp top tướng.
+Chỉ dùng đội hình đầy đủ và kết quả hợp lệ; bản ghi thiếu được đếm riêng.
+Hai đối thủ phải xuất hiện ở cùng phe địch trong cùng một ván mới được tính là
+đối đầu đồng thời. Tỷ lệ thắng lịch sử không phải bằng chứng khắc chế nhân quả.
+Gợi ý ưu tiên độ phủ nhiều mục tiêu và rủi ro cơ chế; lịch sử chỉ phân hạng khi
+các tiêu chí cơ chế bằng nhau, với ít nhất 5 ván và làm mượt bằng 10 ván giả định
+ở mức 50%. Mặc định xem năm mới nhất có dữ liệu, không trộn mọi thời kỳ thành
+meta hiện tại. Ngày thu thập, phạm vi và số bản ghi loại được hiển thị trong trang.
 
 Bảng xếp hạng cá nhân phản ánh đánh giá của bạn, **không phải** xếp hạng thi đấu hay
 tỷ lệ thắng thực tế. Bảng được lưu trên thiết bị của bạn; hãy tải tệp JSON để
