@@ -47,7 +47,7 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
   các ứng viên theo cả hai chiều. Mỗi đường suy luận dẫn về kỹ năng, quy tắc,
   điều kiện và phản ứng ngược; không suy khắc chế bắc cầu hay lấy số cạnh làm điểm.
 - 148 build theo tướng và đường từ TierLQ: trang bị, ngọc và phép bổ trợ.
-- Trợ lý **Đội hình & cấm chọn** trong mục Khắc chế: nhập tối đa 5 tướng
+- Tab **Cấm chọn** (`#draft`) riêng trên thanh điều hướng: nhập tối đa 5 tướng
   mỗi đội và danh sách đã cấm; điểm đội hình, gợi ý chọn và gợi ý cấm cập nhật
   ngay. Tướng đã chọn/cấm (kể cả dạng khác của Flowborn) không còn khả dụng.
   Có lọc tên/vai trò, chế độ chỉ dùng chứng cứ đã đối chiếu và xem cơ chế từng cặp.

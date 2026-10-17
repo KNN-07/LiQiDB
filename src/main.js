@@ -34,13 +34,13 @@ function setTheme() {
 theme.addEventListener('change', setTheme);
 setTheme();
 for (const link of document.querySelectorAll('[data-view]')) {
-  const name = {meta:'rune', heroes:'heroes', 'tier-list':'fighter', counters:'counter', items:'tank', runes:'rune', spells:'spell'}[link.dataset.view];
+  const name = {meta:'rune', heroes:'heroes', 'tier-list':'fighter', counters:'counter', draft:'heroes', items:'tank', runes:'rune', spells:'spell'}[link.dataset.view];
   link.insertAdjacentHTML('afterbegin', glyph(name));
 }
 for (const placeholder of document.querySelectorAll('span[data-icon]')) placeholder.innerHTML = glyph(placeholder.dataset.icon);
 const view = () => {
   const route = location.hash.slice(1).split('/')[0];
-  return ['meta','heroes','counters','tier-list','items','runes','spells'].includes(route) ? route : 'meta';
+  return ['meta','heroes','counters','draft','tier-list','items','runes','spells'].includes(route) ? route : 'meta';
 };
 
 function header(title, subtitle, eyebrow = 'CẨM NANG LIÊN QUÂN MOBILE') {
@@ -58,12 +58,11 @@ function heroCard(hero) {
 function empty() {
   return `<section class="empty"><span class="empty-symbol" aria-hidden="true">${glyph('search')}</span><h2>Chưa tìm thấy kết quả</h2><p>Thử tên khác hoặc xóa bộ lọc để xem toàn bộ cẩm nang.</p><button class="button" data-clear>Xóa bộ lọc</button></section>`;
 }
+function renderDraftPage() {
+  main.innerHTML = `<div class="content">${header('Dựng đội hình. Tính nước đi.', 'Cân nhắc lựa chọn và lượt cấm từ cơ chế của hai đội.', 'TRỢ LÝ CẤM CHỌN')}${renderDraft(data)}</div>`;
+}
 function renderCounters() {
-  const modeControl = `<label class="sort counter-mode"><span>Cách tra cứu</span><select id="counter-mode"><option value="reviewed"${counterMode==='reviewed'?' selected':''}>Phân tích đã đối chiếu</option><option value="graph"${counterMode==='graph'?' selected':''}>Đồ thị cơ chế</option><option value="draft"${counterMode==='draft'?' selected':''}>Đội hình &amp; cấm chọn</option></select></label>`;
-  if(counterMode==='draft') {
-    main.innerHTML = `<div class="content">${header('Dựng đội hình. Tính nước đi.', 'Cân nhắc lựa chọn và lượt cấm từ cơ chế của hai đội.', 'TRỢ LÝ CẤM CHỌN')}${modeControl}${renderDraft(data)}</div>`;
-    return;
-  }
+  const modeControl = `<label class="sort counter-mode"><span>Cách tra cứu</span><select id="counter-mode"><option value="reviewed"${counterMode==='reviewed'?' selected':''}>Phân tích đã đối chiếu</option><option value="graph"${counterMode==='graph'?' selected':''}>Đồ thị cơ chế</option></select></label>`;
   if(counterMode==='graph') {
     main.innerHTML = `<div class="content">${header('Mọi đối thủ. Từng cơ chế.', 'Tra đường suy luận có nguồn, xem cả tương tác hỗ trợ và phản ứng ngược.', 'CẨM NANG KHẮC CHẾ')}${modeControl}${renderGraphBrowser(data,query,graphState,counterLimit,toolbar,sort)}</div>`;
     return;
@@ -125,8 +124,8 @@ function render(animate = false) {
     link.classList.toggle('active', link.dataset.view === current);
     if (link.dataset.view === current) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current');
   }
-  document.title = `${current === 'meta' ? 'Meta mùa S4 2026' : current === 'heroes' ? 'Tướng' : current === 'counters' ? 'Cặp khắc chế' : current === 'tier-list' ? 'Bảng xếp hạng cá nhân' : collectionNames[current][0]} - LiQiDB`;
-  if (current === 'meta') main.innerHTML = renderSeason(data, query, seasonState); else if (current === 'heroes') renderHeroes(); else if (current === 'counters') renderCounters(); else if (current === 'tier-list') renderTiers(); else renderCollection(current);
+  document.title = `${current === 'meta' ? 'Meta mùa S4 2026' : current === 'heroes' ? 'Tướng' : current === 'counters' ? 'Cặp khắc chế' : current === 'draft' ? 'Cấm chọn' : current === 'tier-list' ? 'Bảng xếp hạng cá nhân' : collectionNames[current][0]} - LiQiDB`;
+  if (current === 'meta') main.innerHTML = renderSeason(data, query, seasonState); else if (current === 'heroes') renderHeroes(); else if (current === 'counters') renderCounters(); else if (current === 'draft') renderDraftPage(); else if (current === 'tier-list') renderTiers(); else renderCollection(current);
   if (animate) motion.enter();
 }
 function detailSources(sources = {}) {

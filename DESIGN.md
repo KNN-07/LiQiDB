@@ -155,7 +155,8 @@ Results render twelve cards at a time, never the complete matrix as DOM.
 
 ## 13. Team draft advisor
 
-- Third counter mode: "Đội hình & cấm chọn". Two five-slot team panels,
+- Dedicated top-level "Cấm chọn" navigation tab at `#draft`, separate from
+  "Khắc chế" and its reviewed/graph selector. Two five-slot team panels,
   labelled native selects, portraits, class summaries and removable ban chips.
   Desktop panels sit side by side; phone panels stack in document flow.
 - Reuse panel/raised/line/accent tokens, square controls, 16/24/32px spacing,
