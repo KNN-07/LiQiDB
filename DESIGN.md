@@ -152,3 +152,23 @@ Results render twelve cards at a time, never the complete matrix as DOM.
   are visible when opened, with the rest in a nested native disclosure.
 - Unknown lookup offers the source gap and any opposing evidence; it never says
   neutral or 0/5. Both Flowborn forms retain their role labels in every selector.
+
+## 13. Team draft advisor
+
+- Third counter mode: "Đội hình & cấm chọn". Two five-slot team panels,
+  labelled native selects, portraits, class summaries and removable ban chips.
+  Desktop panels sit side by side; phone panels stack in document flow.
+- Reuse panel/raised/line/accent tokens, square controls, 16/24/32px spacing,
+  44px minimum targets and sentence-case body labels. No new animation.
+- Score summary separates a signed draft heuristic from coverage. Pair grades
+  remain ordinal 1–5; the aggregate index is not a win probability. Reviewed
+  direction weight 1, inferred direction weight 0.5; unknown contributes no
+  evidence and remains visibly unknown. Explain the formula in a disclosure.
+- Recommendations show available picks against enemies and bans against allies,
+  separate benefit/risk directions, evidence links, and explicit empty states.
+  A reviewed-only toggle changes scoring immediately. Search/class filtering
+  affects recommendations, never removes selected team members.
+- Selection, replacement, removal and reset recalculate immediately without
+  entrance motion, restore focus, and announce a concise score status.
+  Duplicate heroes and alternate forms cannot occupy multiple draft positions.
+  Draft survives navigation within this page session, not browser reload.

@@ -6,6 +6,7 @@ import { renderSeason, renderHeroSeason } from './season.js';
 import { renderHeroWiki } from './wiki.js';
 import { renderHeroMatchups, renderCounterScore, renderMatchupAnalysis, renderScoreMethod } from './matchups.js';
 import { renderGraphBrowser, renderGraphDetail, renderHeroGraph } from './graph-view.js';
+import { draftState, renderDraft } from './draft-view.js';
 
 const main = document.querySelector('main');
 const dialog = document.querySelector('#detail');
@@ -58,7 +59,11 @@ function empty() {
   return `<section class="empty"><span class="empty-symbol" aria-hidden="true">${glyph('search')}</span><h2>Chưa tìm thấy kết quả</h2><p>Thử tên khác hoặc xóa bộ lọc để xem toàn bộ cẩm nang.</p><button class="button" data-clear>Xóa bộ lọc</button></section>`;
 }
 function renderCounters() {
-  const modeControl = `<label class="sort counter-mode"><span>Cách tra cứu</span><select id="counter-mode"><option value="reviewed"${counterMode==='reviewed'?' selected':''}>Phân tích đã đối chiếu</option><option value="graph"${counterMode==='graph'?' selected':''}>Đồ thị cơ chế</option></select></label>`;
+  const modeControl = `<label class="sort counter-mode"><span>Cách tra cứu</span><select id="counter-mode"><option value="reviewed"${counterMode==='reviewed'?' selected':''}>Phân tích đã đối chiếu</option><option value="graph"${counterMode==='graph'?' selected':''}>Đồ thị cơ chế</option><option value="draft"${counterMode==='draft'?' selected':''}>Đội hình &amp; cấm chọn</option></select></label>`;
+  if(counterMode==='draft') {
+    main.innerHTML = `<div class="content">${header('Dựng đội hình. Tính nước đi.', 'Cân nhắc lựa chọn và lượt cấm từ cơ chế của hai đội.', 'TRỢ LÝ CẤM CHỌN')}${modeControl}${renderDraft(data)}</div>`;
+    return;
+  }
   if(counterMode==='graph') {
     main.innerHTML = `<div class="content">${header('Mọi đối thủ. Từng cơ chế.', 'Tra đường suy luận có nguồn, xem cả tương tác hỗ trợ và phản ứng ngược.', 'CẨM NANG KHẮC CHẾ')}${modeControl}${renderGraphBrowser(data,query,graphState,counterLimit,toolbar,sort)}</div>`;
     return;
@@ -173,6 +178,32 @@ function openRecord(index) {
   dialog.scrollTop = 0;
 }
 main.addEventListener('click',event=>{
+  const draftAdd = event.target.closest('[data-draft-add]');
+  if(draftAdd) {
+    if(draftAdd.dataset.draftAdd === 'pick') {
+      const slot = draftState.allies.indexOf('');
+      if(slot < 0) return;
+      draftState.allies[slot] = draftAdd.dataset.slug;
+      render(); document.querySelector(`#draft-allies-${slot}`).focus({preventScroll:true});
+    } else {
+      draftState.bans.push(draftAdd.dataset.slug);
+      render(); document.querySelector('#draft-ban').focus({preventScroll:true});
+    }
+    return;
+  }
+  const unban = event.target.closest('[data-draft-unban]');
+  if(unban) {
+    draftState.bans = draftState.bans.filter(slug => slug !== unban.dataset.draftUnban);
+    render(); document.querySelector('#draft-ban').focus({preventScroll:true}); return;
+  }
+  if(event.target.closest('#draft-reset')) {
+    draftState.allies.fill(''); draftState.enemies.fill(''); draftState.bans = [];
+    draftState.search = ''; draftState.role = 'All'; draftState.limit = 6;
+    render(); document.querySelector('#draft-allies-0').focus({preventScroll:true}); return;
+  }
+  if(event.target.closest('[data-draft-more]')) {
+    draftState.limit += 6; render(); document.querySelector('#draft-search').focus({preventScroll:true}); return;
+  }
   const graphPair = event.target.closest('[data-graph-pair]');
   if(graphPair) return openGraphPair(graphPair.dataset.graphPair);
   if(event.target.closest('#graph-reset')) {
@@ -205,10 +236,29 @@ main.addEventListener('click',event=>{
   }
 });
 main.addEventListener('input',event=>{
+  if(event.target.id === 'draft-search') {
+    const position = event.target.selectionStart;
+    draftState.search = event.target.value; draftState.limit = 6; render();
+    const input = document.querySelector('#draft-search'); input.focus({preventScroll:true}); input.setSelectionRange(position,position); return;
+  }
   if(event.target.id!=='search') return;
   const position=event.target.selectionStart;query=event.target.value;counterLimit=12;render();const input=document.querySelector('#search');input.focus();input.setSelectionRange(position,position);
 });
 main.addEventListener('change',event=>{
+  if(event.target.dataset.draftSide) {
+    const id = event.target.id;
+    draftState[event.target.dataset.draftSide][Number(event.target.dataset.draftSlot)] = event.target.value;
+    render(); document.querySelector(`#${id}`).focus({preventScroll:true}); return;
+  }
+  if(event.target.id === 'draft-ban' && event.target.value) {
+    draftState.bans.push(event.target.value); render(); document.querySelector('#draft-ban').focus({preventScroll:true}); return;
+  }
+  if(event.target.id === 'draft-inferred' || event.target.id === 'draft-role') {
+    const id = event.target.id;
+    if(id === 'draft-inferred') draftState.includeInferred = event.target.checked;
+    else { draftState.role = event.target.value; draftState.limit = 6; }
+    render(); document.querySelector(`#${id}`).focus({preventScroll:true}); return;
+  }
   if(event.target.id==='counter-mode') {counterMode=event.target.value;counterLimit=12;render();document.querySelector('#counter-mode').focus({preventScroll:true});}
   if(['graph-counter','graph-target','graph-status'].includes(event.target.id)) {const id=event.target.id;graphState[id.slice(6)]=event.target.value;counterLimit=12;render();document.querySelector(`#${id}`).focus({preventScroll:true});}
   if(event.target.id==='catalog-source') {catalogSource=event.target.value;query='';render();document.querySelector('#catalog-source').focus({preventScroll:true});}
@@ -247,7 +297,7 @@ function routeQuery() {
 }
 window.addEventListener('hashchange',()=>{routeQuery();selectedRole='All';counterLimit=12;dialog.close();render(true);window.scrollTo(0,0);});
 document.addEventListener('keydown',event=>{
-  if(event.key==='/' && !dialog.open && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) {event.preventDefault();document.querySelector('#search')?.focus();}
+  if(event.key==='/' && !dialog.open && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) {event.preventDefault();document.querySelector('#search, #draft-search')?.focus();}
 });
 document.addEventListener('error',event=>{
   if(event.target.tagName==='IMG') {event.target.style.visibility='hidden';event.target.parentElement.classList.add('art-unavailable');}

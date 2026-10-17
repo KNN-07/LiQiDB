@@ -47,6 +47,10 @@ Bản ghi công và giấy phép được xuất bản cùng trang trong
   các ứng viên theo cả hai chiều. Mỗi đường suy luận dẫn về kỹ năng, quy tắc,
   điều kiện và phản ứng ngược; không suy khắc chế bắc cầu hay lấy số cạnh làm điểm.
 - 148 build theo tướng và đường từ TierLQ: trang bị, ngọc và phép bổ trợ.
+- Trợ lý **Đội hình & cấm chọn** trong mục Khắc chế: nhập tối đa 5 tướng
+  mỗi đội và danh sách đã cấm; điểm đội hình, gợi ý chọn và gợi ý cấm cập nhật
+  ngay. Tướng đã chọn/cấm (kể cả dạng khác của Flowborn) không còn khả dụng.
+  Có lọc tên/vai trò, chế độ chỉ dùng chứng cứ đã đối chiếu và xem cơ chế từng cặp.
 - Tìm kiếm không dấu, lọc vai trò và sắp xếp tên theo tiếng Việt.
 - 112 trang bị, 88 ngọc và 9 phép bổ trợ với thông tin chi tiết.
   Có thể chuyển sang danh mục TierLQ gồm 64 trang bị, 21 ngọc và 9 phép.
@@ -66,6 +70,14 @@ biên tập có điều kiện, không phải kết quả đo tỷ lệ thắng.
 Điểm của ứng viên đồ thị chỉ mô tả một tương tác có điều kiện, không phải
 sức mạnh tổng thể của cặp. Không có quy tắc khớp nghĩa là chưa biết, không phải
 cân bằng. Mô tả wiki chưa đầy đủ hoặc đã đổi không được tự điền từ suy đoán.
+
+Chỉ số đội hình là phép tổng hợp tham khảo: `100 × tổng (thuận − ngược) /
+(5 × số cặp)`, với trọng số 1 cho hướng đã đối chiếu, 0,5 cho hướng suy luận.
+Hướng chưa biết không đóng góp điểm và được đếm riêng; không có chứng cứ thì
+không chấm chỉ số. Không coi chỉ số gần 0 là cân bằng khi độ phủ thấp.
+Gợi ý chọn đối chiếu với đội địch; gợi ý cấm đối chiếu đe dọa với đội bạn.
+Chưa tính phối hợp đồng đội, đường đi, trình độ hay luật lượt cấm của từng giải.
+Đội hình giữ lại khi chuyển mục trong trang, nhưng không lưu qua lần tải lại.
 
 Bảng xếp hạng cá nhân phản ánh đánh giá của bạn, **không phải** xếp hạng thi đấu hay
 tỷ lệ thắng thực tế. Bảng được lưu trên thiết bị của bạn; hãy tải tệp JSON để
